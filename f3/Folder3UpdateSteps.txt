@@ -1,0 +1,5 @@
+1. manual check doc
+2. verify
+3. Add List of accounts that need to be created
+4. Wait list
+5. distribute

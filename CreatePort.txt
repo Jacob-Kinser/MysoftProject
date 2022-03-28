@@ -1,0 +1,13 @@
+LEN/ports list - add new
+
+port nbr* - click three dots
+
+len port master - add new
+
+switch node - data
+
+card type if X = XENET-P
+if M = MENET-P
+status = active
+
+save and exit x2

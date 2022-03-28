@@ -1,0 +1,47 @@
+ask at end of full create if they want to list all cables, jacks, etc
+
+fullZout
+
+z out distribution
+
+
+z out everything on the list that isnt on the new jack list
+EXCEPT results that only return -D and -V (two results) and cross check the list tosee if that
+room is being updating to a b1. then leave those and in the new class fullzupdatecreate one you can use the update vd
+
+for full Z out there are 3 main things to test
+z out jack
+not updating jack
+updating vd
+
+address updating items in folder 3
+
+suppress selenium warnings
+
+custom row
+
+add a lot of write statements
+
+https://www.google.com/search?q=how+to+put+a+java+project+on+github&rlz=1C1GCEA_enUS939US939&sxsrf=ALeKk02NElNA3_dDKK-LJaNdVwALBs2U6w%3A1622053181562&ei=PZGuYNLgIc6ztQaslYHIAg&oq=how+to+put+a+java+projet+&gs_lcp=Cgdnd3Mtd2l6EAMYADIECAAQDTIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoECCMQJzoFCAAQkQI6BQgAELEDOggILhCxAxCDAToICAAQsQMQgwE6CAguEMcBEKMCOgsILhDHARCvARCRAjoECC4QQzoCCAA6BQguELEDOgUIABDJAzoFCAAQkgM6BAgAEEM6BwgjEOoCECc6BwguEOoCECc6CwguELEDEMcBEKMCOggILhDHARCvAToICAAQsQMQkQJQt0pY84gBYKqRAWgGcAJ4AIAB3wGIAdYSkgEGMzEuMC4xmAEAoAEBqgEHZ3dzLXdperABCsABAQ&sclient=gws-wiz
+
+
+Folder 3 update scenarios
+
+normal update
+	- one result
+	- no results
+	- more than one x0 m0
+	- one x0/m0 and one other - done
+phone
+do not update
+no results
+
+should probably make update update anything that can be updated maybe
+
+NOT tested
+        System.out.println("1. Folder 3 -> 4");
+        System.out.println("2. Create Cables");
+        System.out.println("3. View Cables");
+        System.out.println("4. Create Jacks");
+
+linden manually check E63391B1-D room E63G70

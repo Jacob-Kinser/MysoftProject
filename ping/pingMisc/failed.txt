@@ -1,0 +1,11 @@
+ap-h994113aa-cisco9105w-01.misc.iastate.edu.
+ap-h994315aa-cisco9105w-01.misc.iastate.edu.
+ap-h996211aa-cisco9105w-01.misc.iastate.edu.
+ap-j402249b1-cisco9105w-cc.misc.iastate.edu.
+ap-j402275b1-cisco9105w-cc.misc.iastate.edu.
+ap-j402314b1-cisco9105w-bb.misc.iastate.edu.
+ap-j402321b1-cisco9105w-bb.misc.iastate.edu.
+ap-j403386b1-cisco9105w-bb.misc.iastate.edu.
+ap-j301480b1-cisco9105w-01.misc.iastate.edu.
+ap-e71114aa-cisco9105w-01.misc.iastate.edu.
+ap-e523003b1-cisco9105w-01.misc.iastate.edu.
