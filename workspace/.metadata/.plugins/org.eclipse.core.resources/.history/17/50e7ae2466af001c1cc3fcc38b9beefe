@@ -48,6 +48,7 @@ public class WorktagUpdate {
 		 */
 		while(NullinaRow !=7){
 			//String jackid = "FJ101003B1-D";
+			String worktag = "";
 			String jackid = ES.RWcell(ES.jackNum, row, null, 0);
 			String newjackid = jackid;
 			if(jackid.equals("empty")) {
@@ -56,6 +57,7 @@ public class WorktagUpdate {
 			}
 			else {
 				boolean manUpdate = false;
+				boolean noResults = false;
 				String newLine = jackid;
 				String trimmedJackid = TrimJackid(jackid);
 				if(trimmedJackid.equals("none")) {
@@ -65,7 +67,7 @@ public class WorktagUpdate {
 				else Searchcable(trimmedJackid);
 				if(returnCables.size() == 1) {
 					System.out.println("first return size == 1 " + jackid);
-					String worktag = GrabWorktag(returnCablesX.get(0));
+					worktag = GrabWorktag(returnCablesX.get(0));
 					newjackid = addEnd(jackid, jackidRet.get(0));
 					newLine = newjackid + ", " + worktag;
 				}
@@ -74,9 +76,9 @@ public class WorktagUpdate {
 						//check if ap is jackid - -d + W
 						if((ItemNbr.get(0).contains("AP") || ItemNbr.get(1).contains("AP"))) {
 							System.out.println("AP " + jackid);
-							String worktag = GrabWorktag(returnCablesX.get(0));
+							worktag = GrabWorktag(returnCablesX.get(0));
 							newjackid = addEnd(jackid, jackidRet.get(0));
-							newLine = newjackid + ", " + worktag;
+							newLine = newjackid + "W, " + worktag;
 							
 						}
 						else { //manual update
@@ -97,7 +99,7 @@ public class WorktagUpdate {
 					Searchcable(jackid);
 					if(returnCables.size() == 1) {
 						System.out.println("2nd ret size = 1 " + jackid);
-						String worktag = GrabWorktag(returnCablesX.get(0));
+						worktag = GrabWorktag(returnCablesX.get(0));
 						newjackid = addEnd(jackid, jackidRet.get(0));
 						newLine = newjackid + ", " + worktag;
 						//ES.RWcell(ES.noteNum, row, newLine, 1);
@@ -146,21 +148,49 @@ public class WorktagUpdate {
 				}
 				else {
 					System.out.println("No results " + jackid);
-					//no results
+					noResults = true;
 				}
 				NullinaRow = 0;
-				Boolean zeroContains = false;
-				if(ItemNbr.size() > 1) zeroContains = ItemNbr.get(0).contains("702") && !ItemNbr.get(0).contains("3702");
-				Boolean oneContains = false;
-				if(ItemNbr.size() > 1) oneContains = ItemNbr.get(1).contains("702") && !ItemNbr.get(1).contains("3702");
-				if(zeroContains || oneContains) { //702 or 9120
-					System.out.println(newLine + " " + ES.jackNum + " " + ES.noteNum);
+				//Boolean WroteItem = false;
+				Boolean FoundItem = false;
+				if(!manUpdate && !noResults) {
+					for(int i = 0; i < ItemNbr.size();++i) {
+						/*
+						 * Order of if statements is important
+						 */
+						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-INDOOR", 1);
+							FoundItem = true;
+						
+						}
+						else if(ItemNbr.get(i).contains("702")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							FoundItem = true;
+							
+						}
+						else if(ItemNbr.get(i).contains("1815")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							FoundItem = true;
+							
+						}
+						else if(worktag.equals("0007")) {
+							ES.RWcell(ES.noteNum, row, "UPS", 1);
+							FoundItem = true;
+						}
+						else if(ItemNbr.get(i).contains("S-CENET") && !FoundItem) {
+							ES.RWcell(ES.noteNum, row, "S-CENET", 1);
+							FoundItem = true;
+							
+						}
+					}
+					if(!FoundItem) {
+						ES.RWcell(ES.noteNum, row, "CENET", 1);
+					}
 					ES.RWcell(ES.jackNum, row, newLine, 1);
-					if(ItemNbr.size() == 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(0), 1);
-					else if(ItemNbr.size() > 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(1), 1);
+						
+			
 				}
+				
 				
 			}
 			row++;
@@ -288,8 +318,9 @@ public class WorktagUpdate {
 			//*[@id="dgListView_0_0"]
 			for(int i = 0; i < 20; i++) {
 				//System.out.println(path2);
+				int enddatesize = driver.findElements(By.xpath(enddate)).size();
 				int size0 = driver.findElements(By.xpath(path)).size();
-				if(size0 == 1) {
+				if(size0 == 1 && enddatesize == 0) {
 					size0 = driver.findElements(By.xpath(path2)).size();
 					if(size0 == 1) {
 						returnCablesX.add(path);
@@ -309,6 +340,7 @@ public class WorktagUpdate {
 				path2 = "//*[@id=\"dgListView_" + digit + "_0\"]";
 				pathItemNbr = "//*[@id=\"dgListView_" + digit + "_1\"]";
 				pathjackid = "//*[@id=\"dgListView_" + digit + "_0\"]";
+				enddate = "//*[@id=\"dgListView_" + digit + "_4\"]";
 				
 			}
 			j++;

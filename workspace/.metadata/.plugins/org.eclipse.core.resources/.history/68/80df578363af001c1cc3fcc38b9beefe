@@ -56,6 +56,7 @@ public class WorktagUpdate {
 			}
 			else {
 				boolean manUpdate = false;
+				boolean noResults = false;
 				String newLine = jackid;
 				String trimmedJackid = TrimJackid(jackid);
 				if(trimmedJackid.equals("none")) {
@@ -76,7 +77,7 @@ public class WorktagUpdate {
 							System.out.println("AP " + jackid);
 							String worktag = GrabWorktag(returnCablesX.get(0));
 							newjackid = addEnd(jackid, jackidRet.get(0));
-							newLine = newjackid + ", " + worktag;
+							newLine = newjackid + "W, " + worktag;
 							
 						}
 						else { //manual update
@@ -139,27 +140,45 @@ public class WorktagUpdate {
 							}
 						}
 						System.out.println("size: " + jackidRet.size() + " " + jackidRet.toString());
+						System.out.println("size: " + ItemNbr.size() + " " + ItemNbr.toString());
 						//GRAB WORKTAG and create new line here
 						
 					}
 				}
 				else {
 					System.out.println("No results " + jackid);
-					//no results
+					noResults = true;
 				}
 				NullinaRow = 0;
-				Boolean zeroContains = false;
-				if(ItemNbr.size() > 1) zeroContains = ItemNbr.get(0).contains("702") && !ItemNbr.get(0).contains("3702");
-				Boolean oneContains = false;
-				if(ItemNbr.size() > 1) oneContains = ItemNbr.get(1).contains("702") && !ItemNbr.get(1).contains("3702");
-				if(zeroContains || oneContains) { //702 or 9120
-					System.out.println(newLine + " " + ES.jackNum + " " + ES.noteNum);
-					ES.RWcell(ES.jackNum, row, newLine, 1);
-					if(ItemNbr.size() == 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(0), 1);
-					else if(ItemNbr.size() > 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(1), 1);
+				Boolean WroteItem = false;
+				if(!manUpdate && !noResults) {
+					for(int i = 0; i < ItemNbr.size();++i) {
+						/*
+						 * Order of if statements is important
+						 */
+						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-INDOOR", 1);
+						
+						}
+						else if(ItemNbr.get(i).contains("702")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							
+						}
+						else if(ItemNbr.get(i).contains("1815")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							
+						}
+						else {
+							ES.RWcell(ES.noteNum, row, "CENET", 1);
+							
+						}
+					}
+					if(!WroteItem) {
+						ES.RWcell(ES.jackNum, row, newLine, 1);
+						WroteItem = true;
+					}
 				}
+				
 				
 			}
 			row++;
@@ -283,11 +302,13 @@ public class WorktagUpdate {
 			String path2 = "//*[@id=\"dgListView_" + digit + "_0\"]";
 			String pathItemNbr = "//*[@id=\"dgListView_" + digit + "_1\"]";
 			String pathjackid = "//*[@id=\"dgListView_" + digit + "_0\"]";
+			String enddate = "//*[@id=\"dgListView_" + digit + "_4\"]";
 			//*[@id="dgListView_0_0"]
-			for(int i = 0; i < 10; i++) {
+			for(int i = 0; i < 20; i++) {
 				//System.out.println(path2);
+				int enddatesize = driver.findElements(By.xpath(enddate)).size();
 				int size0 = driver.findElements(By.xpath(path)).size();
-				if(size0 == 1) {
+				if(size0 == 1 && enddatesize == 0) {
 					size0 = driver.findElements(By.xpath(path2)).size();
 					if(size0 == 1) {
 						returnCablesX.add(path);
@@ -307,6 +328,7 @@ public class WorktagUpdate {
 				path2 = "//*[@id=\"dgListView_" + digit + "_0\"]";
 				pathItemNbr = "//*[@id=\"dgListView_" + digit + "_1\"]";
 				pathjackid = "//*[@id=\"dgListView_" + digit + "_0\"]";
+				enddate = "//*[@id=\"dgListView_" + digit + "_4\"]";
 				
 			}
 			j++;

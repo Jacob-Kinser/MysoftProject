@@ -48,6 +48,7 @@ public class WorktagUpdate {
 		 */
 		while(NullinaRow !=7){
 			//String jackid = "FJ101003B1-D";
+			String worktag = "";
 			String jackid = ES.RWcell(ES.jackNum, row, null, 0);
 			String newjackid = jackid;
 			if(jackid.equals("empty")) {
@@ -56,6 +57,7 @@ public class WorktagUpdate {
 			}
 			else {
 				boolean manUpdate = false;
+				boolean noResults = false;
 				String newLine = jackid;
 				String trimmedJackid = TrimJackid(jackid);
 				if(trimmedJackid.equals("none")) {
@@ -65,7 +67,7 @@ public class WorktagUpdate {
 				else Searchcable(trimmedJackid);
 				if(returnCables.size() == 1) {
 					System.out.println("first return size == 1 " + jackid);
-					String worktag = GrabWorktag(returnCablesX.get(0));
+					worktag = GrabWorktag(returnCablesX.get(0));
 					newjackid = addEnd(jackid, jackidRet.get(0));
 					newLine = newjackid + ", " + worktag;
 				}
@@ -74,93 +76,125 @@ public class WorktagUpdate {
 						//check if ap is jackid - -d + W
 						if((ItemNbr.get(0).contains("AP") || ItemNbr.get(1).contains("AP"))) {
 							System.out.println("AP " + jackid);
-							String worktag = GrabWorktag(returnCablesX.get(0));
+							worktag = GrabWorktag(returnCablesX.get(0));
 							newjackid = addEnd(jackid, jackidRet.get(0));
-							newLine = newjackid + ", " + worktag;
+							newLine = newjackid + "W, " + worktag;
 							
 						}
-						else { //manual update
-							manUpdate = true;
-							//make W jackid
-							//iterate through return jacks
-							//check for matches
-							System.out.println("manual update 1 " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
-							newLine = newjackid + ", " + "Manual update needed, two results (no ap)";
-							ES.RWcell(ES.jackNum, row, newLine, 1);
-							
-						}
+						
+						
+					}
+					else { //manual update
+						manUpdate = true;
+						//make W jackid
+						//iterate through return jacks
+						//check for matches
+						System.out.println("manual update 1 " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
+						newLine = newjackid + ", " + "Manual update needed, two results (no ap)";
+						ES.RWcell(ES.jackNum, row, newLine, 1);
 						
 					}
 						
 				}
 				else if(returnCables.size() > 2) {
-//					Searchcable(jackid);
-//					if(returnCables.size() == 1) {
-//						System.out.println("2nd ret size = 1 " + jackid);
-//						String worktag = GrabWorktag(returnCablesX.get(0));
-//						newjackid = addEnd(jackid, jackidRet.get(0));
-//						newLine = newjackid + ", " + worktag;
-//						//ES.RWcell(ES.noteNum, row, newLine, 1);
-//					}
-//					else {//manual tag
+					Searchcable(jackid);
+					if(returnCables.size() == 1) {
+						System.out.println("2nd ret size = 1 " + jackid);
+						worktag = GrabWorktag(returnCablesX.get(0));
+						newjackid = addEnd(jackid, jackidRet.get(0));
+						newLine = newjackid + ", " + worktag;
+						//ES.RWcell(ES.noteNum, row, newLine, 1);
+					}
+					else {//manual tag
 						manUpdate = true;
-						System.out.println("2nd manual update " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
-						System.out.println("jack ret size " + jackidRet.size());
-						newLine = newjackid + ", " + "Manual update needed";
-						ES.RWcell(ES.jackNum, row, newLine, 1);
-						/*
-						 * jackid = full jackid
-						 * trimmed jackid (could be none)
-						 */
-						String Wjackid = "";
-						if(trimmedJackid.equals("none")) {
-							Wjackid = jackid + "W";
-						}
-						else {
-							Wjackid = trimmedJackid + "W";
 						
-						}
-						for(int i = 0; i < jackidRet.size(); ++i) {
-							if(jackidRet.get(i).toLowerCase().contains(Wjackid.toLowerCase())) {
-								
-							}
-							else if(jackidRet.get(i).toLowerCase().contains(jackid.toLowerCase())) {
-								
-							}
-							else if(jackidRet.get(i).toLowerCase().contains(trimmedJackid.toLowerCase())) {
-								
-							}
-							else {
-								returnCables.remove(i);
-								returnCablesX.remove(i);
-								returnCablesNum.remove(i);
-								ItemNbr.remove(i);
-								jackidRet.remove(i);
-							}
-						}
-						System.out.println("size: " + jackidRet.size() + " " + jackidRet.toString());
-						System.out.println("size: " + ItemNbr.size() + " " + ItemNbr.toString());
-						//GRAB WORKTAG and create new line here
-						
-					//}
+					}
 				}
 				else {
 					System.out.println("No results " + jackid);
-					//no results
+					noResults = true;
 				}
 				NullinaRow = 0;
-				Boolean zeroContains = false;
-				if(ItemNbr.size() > 1) zeroContains = ItemNbr.get(0).contains("702") && !ItemNbr.get(0).contains("3702");
-				Boolean oneContains = false;
-				if(ItemNbr.size() > 1) oneContains = ItemNbr.get(1).contains("702") && !ItemNbr.get(1).contains("3702");
-				if(zeroContains || oneContains) { //702 or 9120
-					System.out.println(newLine + " " + ES.jackNum + " " + ES.noteNum);
-					ES.RWcell(ES.jackNum, row, newLine, 1);
-					if(ItemNbr.size() == 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(0), 1);
-					else if(ItemNbr.size() > 1 && !manUpdate)
-						ES.RWcell(ES.noteNum, row, ItemNbr.get(1), 1);
+				if(manUpdate) {
+					System.out.println("manual update " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
+					System.out.println("jack ret size " + jackidRet.size());
+					newLine = newjackid + ", " + "Manual update needed";
+					//ES.RWcell(ES.jackNum, row, newLine, 1);
+					/*
+					 * jackid = full jackid
+					 * trimmed jackid (could be none)
+					 */
+					String Wjackid = "";
+					if(trimmedJackid.equals("none")) {
+						Wjackid = jackid + "W";
+					}
+					else {
+						Wjackid = trimmedJackid + "W";
+					
+					}
+					for(int i = 0; i < jackidRet.size(); ++i) {
+						if(jackidRet.get(i).toLowerCase().contains(Wjackid.toLowerCase())) {
+							
+						}
+						else if(jackidRet.get(i).toLowerCase().contains(jackid.toLowerCase())) {
+							
+						}
+						else if(jackidRet.get(i).toLowerCase().contains(trimmedJackid.toLowerCase())) {
+							
+						}
+						else {
+							returnCables.remove(i);
+							returnCablesX.remove(i);
+							returnCablesNum.remove(i);
+							ItemNbr.remove(i);
+							jackidRet.remove(i);
+						}
+					}
+					System.out.println("size: " + jackidRet.size() + " " + jackidRet.toString());
+					System.out.println("size: " + ItemNbr.size() + " " + ItemNbr.toString());
+					//GRAB WORKTAG and create new line here
+					
 				}
+				
+				Boolean FoundItem = false;
+				if(!manUpdate && !noResults) {
+					for(int i = 0; i < ItemNbr.size();++i) {
+						/*
+						 * Order of if statements is important
+						 */
+						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-INDOOR", 1);
+							FoundItem = true;
+						
+						}
+						else if(ItemNbr.get(i).contains("702")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							FoundItem = true;
+							
+						}
+						else if(ItemNbr.get(i).contains("1815")) {
+							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
+							FoundItem = true;
+							
+						}
+						else if(worktag.equals("0007")) {
+							ES.RWcell(ES.noteNum, row, "UPS", 1);
+							FoundItem = true;
+						}
+						else if(ItemNbr.get(i).contains("S-CENET") && !FoundItem) {
+							ES.RWcell(ES.noteNum, row, "S-CENET", 1);
+							FoundItem = true;
+							
+						}
+					}
+					if(!FoundItem) {
+						ES.RWcell(ES.noteNum, row, "CENET", 1);
+					}
+					ES.RWcell(ES.jackNum, row, newLine, 1);
+						
+			
+				}
+				
 				
 			}
 			row++;
