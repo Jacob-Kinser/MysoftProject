@@ -1,0 +1,240 @@
+      // Thread.sleep(5000);
+        driver.switchTo().frame(driver.findElement(By.name("mainFrame")));
+        driver.switchTo().frame(driver.findElement(By.name("contents")));
+		//driver.switchTo().defaultContent();
+		System.out.println(driver.findElements(By.id("mainForm")).size());
+		//WebElement f = driver.findElement(By.cssSelector("form[name='catgy']"));
+		//driver.switchTo().frame(0);
+		driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+		WebElement element = driver.findElement(By.xpath("//*[@id=\"td2\"]"));
+		element.click();
+		driver.switchTo().parentFrame();
+	    driver.switchTo().frame(driver.findElement(By.name("main")));
+		WebElement element1 = driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]"));
+		element1.sendKeys("J40");
+		//element = driver.findElement(By.xpath("/html/body/form/div[1]/table[2]/tbody/tr/td/table/tbody/tr[1]/td[2]/input[1]"));
+		element1.click();
+//		WebDriverWait wait = new WebDriverWait(driver, 45);
+//		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("tblFilterTable")));
+		//System.out.println(driver.findElements(By.xpath("//*[@id=\"td2\"]")).size());
+        scanner.close();
+       // WebDriverWait wait = new WebDriverWait(driver, 45);
+	//	wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("primaryDiv")));
+        List<WebElement> a  = driver.findElements(By.xpath("/html/body/form[@name='mainForm']/div[@id='primaryDiv']/*"));
+     
+ 
+        		for(WebElement b : a) {
+        			System.out.println(b.getTagName());
+   
+        		}
+        		System.out.println("a size" + a.size());
+       
+     // System.out.println( alert.getText());
+        // Find the text input element by its name
+     //  WebElement element = driver.findElement(By.name("q"));
+       // System.out.println("Welcome to Mysoft");
+      //  WebElement element = driver.findElements(By.)
+      //WebElement element = driver.findElement(By.id("txtFilter1"));
+      //element.click();
+        // Enter something to search for
+     //  element.sendKeys("Cheese!");
+
+        // Now submit the form. WebDriver will find the form for us from the element
+       // element.submit();
+
+        // Check the title of the page
+        System.out.println("Page title is: " + driver.getTitle());
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        	public void OpenExcel(String path) throws IOException  {
+		
+		    
+	} 
+//	public String ReadCell(int col1, int row1)throws IOException {
+//		ss = new FileInputStream(new File("U://work/BUILDING.xlsx"));
+//		wb = new XSSFWorkbook(ss);   
+//		s = wb.getSheet(sheetName);
+//		//s = wb.getSheetAt(1);
+//		Row row=s.getRow(row1); 
+//		Cell cell=row.getCell(col1); 
+//		String value=cell.getStringCellValue();  
+//		System.out.println(value);
+//		ss.close();
+//		
+//		return value;
+//	}
+//	
+//	public void WriteCell(int col1, int row1, String text) throws IOException {		
+//		FileOutputStream outputStream = new FileOutputStream("U://work/BUILDING.xlsx");
+//		s = wb.getSheet(sheetName);
+//		//s = wb.getSheetAt(1);
+//		Row row=s.getRow(row1); 
+//		Cell cell=row.createCell(col1); 
+//		cell.setCellValue(text);
+//	//	String value=cell.getStringCellValue(); 
+//			
+//		wb.write(outputStream);
+//		outputStream.close();
+//	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+full auto test stuff 5/17/2021
+//        	Readexcel a = new Readexcel("createcable");
+//      System.out.println(a.buildingCode + a.RWcell(a.jackNum, 1, "", 0)+ a.RWcell(a.closetNum, 1, "", 0)+ a.RWcell(a.roomNum, 1, "", 0) +
+//    		  a.noteNum);
+//      CreateCable a = new CreateCable(driver);
+//      a.create();
+//        ReadAccount a = new ReadAccount(driver);
+//        a.Read();
+     //   UpdateAccount a = new  UpdateAccount(driver);
+       // a.update();
+        /*
+         * Needs to be adjusted
+         * will work for first run through but
+         * will probably get messed up on 2nd time through when
+         * clicking into the side menus
+         */
+//        UpdateCable cable = new UpdateCable(driver);
+//		UpdateJack jack = new UpdateJack(driver);
+//		UpdateAccount account = new UpdateAccount(driver);
+//		String JID = "J402200";
+//		cable.Switchtocable();
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().frame(driver.findElement(By.name("main")));
+//		cable.Searchcable(JID);
+//		Thread.sleep(5000);
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().frame(driver.findElement(By.name("contents")));
+//		driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().parentFrame();
+//		jack.SwitchTojack();
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().frame(driver.findElement(By.name("main")));
+//		jack.Searchjack(JID);
+//		Thread.sleep(5000);
+//
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().parentFrame();
+//		account.switchToAccount();
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().frame(driver.findElement(By.name("main")));
+//		
+//		
+//		/*
+//		 * probable solution to problem listed above,
+//		 * just close both the tabs before looping back
+//		 * and reset frame
+//		 */
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().frame(driver.findElement(By.name("contents")));
+//		driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+//		driver.findElement(By.xpath("//*[@id=\"td15\"]")).click();
+//		driver.switchTo().parentFrame();
+//		driver.switchTo().parentFrame();
+
+
+
+old jack search 
+
+//		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtFilter1\"]")));
+//		WebElement element1 = driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]"));
+//		element1.sendKeys(cable);
+//		driver.findElement(By.xpath("//*[@id=\"cmdGet\"]")).click();
+//		int size0 = driver.findElements(By.xpath("//*[@id=\"tdDiv_0_dgListViewCol0\"]")).size();
+//		int size1 = driver.findElements(By.xpath("//*[@id=\"tdDiv_1_dgListViewCol0\"]")).size();
+//		int size2 = driver.findElements(By.xpath("//*[@id=\"tdDiv_2_dgListViewCol0\"]")).size();
+//		if(size0 == 1 && size1 == 1 && size2 == 0) {
+//			returnJacks.add(driver.findElement(By.xpath("//*[@id=\"tdDiv_0_dgListViewCol0\"]")).getText());
+//			returnJacks.add(driver.findElement(By.xpath("//*[@id=\"tdDiv_1_dgListViewCol0\"]")).getText());
+//			return 2;
+//		}
+//		return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

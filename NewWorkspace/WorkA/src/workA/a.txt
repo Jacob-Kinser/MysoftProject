@@ -1,0 +1,1272 @@
+     String ab = "";
+        while(!ab.equals("exit")) {
+        	ab = scanner.next();
+        	int isPresent = driver.findElements(By.id(ab)).size();
+        	//int isP2 = driver.findElements(By.xpath("<img class=\"arrow\" id=\"arrowdiv1\" name=\"arrowdiv1\" src=\"images/collapsed.gif\" width=\"11\" height=\"11\" border=\"0\">")).size();
+        	if(isPresent > 0) {
+        		System.out.println("element found");
+        	}
+//        	else if(isP2 > 0) {
+//        		System.out.println("element found P2");
+//        	}
+        	else if(ab.equals("frame")) {
+        		String parentWindowHandler = driver.getWindowHandle();
+        		
+        		driver.switchTo().defaultContent();
+        		System.out.println("switch to frame");
+        		ab = scanner.next();
+        		driver.switchTo().frame(ab);
+        		driver.switchTo().frame("contents");
+        		
+        		driver.switchTo().defaultContent();
+        		ab = scanner.next();
+        		isPresent = driver.findElements(By.id(ab)).size();
+        		if(isPresent > 0) {
+            		System.out.println("element found");
+            	}
+        		
+        		driver.switchTo().defaultContent();
+        		System.out.println("switch to frame");
+        		ab = scanner.next();
+        		driver.switchTo().frame(ab);
+        		
+        		System.out.println("frame found, find element");
+        		ab = scanner.next();
+        		isPresent = driver.findElements(By.id(ab)).size();
+            	if(isPresent > 0) {
+            		System.out.println("element found");
+            	}
+            	driver.switchTo().window(parentWindowHandler);
+        	}
+        	else {
+        		System.out.println("element not found");
+        	}
+        	System.out.println("Checking whole page");
+        	 List<WebElement> a  = driver.findElements(By.xpath("//*[@id]"));
+        	 System.out.println("a size" + a.size());
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        package workA;
+
+
+import java.io.File;
+import java.io.IOException;
+
+
+import java.util.Scanner;
+
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Auto {
+
+	public static void main(String[] args) throws InterruptedException {
+		 // Create a new instance of the html unit driver
+        // Notice that the remainder of the code relies on the interface, 
+        // not the implementation.
+		String current;
+		File file2 = new File("");
+		try {
+			current = new java.io.File( "." ).getCanonicalPath();
+			System.out.println("Current dir:"+current);
+			File file = new File(current);
+			File file1 = new File(file.getParent());
+			file2 = new File(file1.getParent());
+			file2 = new File(file2.getPath() +"/" +"geckodriver-v0.29.1-win64/geckodriver.exe");
+	        String currentDir = System.getProperty("user.dir");
+	        System.out.println("Current dir using System:" +currentDir);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	     System.out.println(file2.getPath());
+	       System.setProperty("webdriver.gecko.driver", file2.getPath());
+        WebDriver driver = new FirefoxDriver();
+        //https://stackoverflow.com/questions/38676719/selenium-using-java-the-path-to-the-driver-executable-must-be-set-by-the-webdr
+        // And now use this to visit Google
+        //driver.get("http://www.google.com");
+        driver.get("https://mysoft.tele.iastate.edu/");
+        //JavascriptExecutor js = (JavascriptExecutor) driver;  
+       // js.executeScript("$('#Username').val(" + "itsys_jkinser" + ")");
+//        String parentWindowHandler = driver.getWindowHandle(); // Store your parent window
+//        String subWindowHandler = null;
+//
+//        Set<String> handles = driver.getWindowHandles(); // get all window handles
+//        Iterator<String> iterator = handles.iterator();
+//        int i = 0;
+//        while (iterator.hasNext()){
+//            subWindowHandler = iterator.next();
+//            i++;
+//        }
+//        System.out.println(i);
+//        driver.switchTo().window(subWindowHandler); // switch to popup window
+//        System.out.println(driver.getPageSource());
+//        driver.switchTo().window(parentWindowHandler);
+        try {
+            WebDriverWait wait = new WebDriverWait(driver,5);
+            wait.until(ExpectedConditions.alertIsPresent());
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
+        } catch (Exception e) {
+            System.out.println("There is no alert");
+        }
+        System.out.println("A popup to mysoft should have appeared");
+        System.out.println("Input your credentials");
+        System.out.println("Enter 1 here to continue, Enter 2 if the pop up did not appear");
+        Scanner scanner = new Scanner(System.in);
+        int myInt = scanner.nextInt();
+        if(myInt == 1) {
+        	System.out.println("Welcome to Mysoft");
+        }
+        else if(myInt == 2) {
+        	
+        }
+        else {
+        	
+        }
+        CreateCable a = new CreateCable(driver);
+        a.Searchcable();
+        
+        scanner.close();
+	}
+
+}
+
+
+
+
+
+full z out before change 6/1/2021
+
+
+
+package workA;
+
+import java.util.ArrayList;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+/*
+ * 1st get all rooms and jacks on spreadsheet
+ * 2nd search all rooms on mysoft and compare then with jacks on spreadsheet
+ */
+public class fullZout {
+	WebDriver driver;
+	ArrayList<String> JackIDs = new ArrayList<>();
+	ArrayList<String> allRooms = new ArrayList<>();
+	Boolean AccountCreate;
+	/*
+	 * might not need this?
+	 * maybe when creating ?
+	 * 
+	 */
+	ArrayList<Boolean> ZdOut = new ArrayList<>();
+	
+	/*
+	 * Returns the row where there are two elements left -v and -d 
+	 * that can be updated to b1
+	 */
+	ArrayList<Integer> twoLeft = new ArrayList<>();
+	
+	public fullZout(WebDriver d, Boolean AC) {
+		driver = d;
+		AccountCreate = AC;
+	}
+	
+	public void execute() throws InterruptedException {
+		Readexcel ES;
+		if(AccountCreate)
+			ES = new Readexcel("ZoutAC");
+		else
+			ES = new Readexcel("Zout");
+		getAllJacks(ES);
+		zOut(ES, false);
+//		for(int i = 0; i < 2; ++i) {
+//			String a = "J402200";
+
+//		}
+		System.out.println("jacks: " + JackIDs);
+		System.out.println("Zd out: " + ZdOut);
+		System.out.println("ones left to be updated: " + twoLeft);
+		
+	}
+	
+	public void zOut(Readexcel ES, Boolean update) throws InterruptedException {
+		CreateCable cable = new CreateCable(driver);
+		CreateCable cable2 = new CreateCable(driver);
+		CreateJack jack = new CreateJack(driver);
+		CreateJack jack2 = new CreateJack(driver);
+		CreateAccount account = new CreateAccount(driver);
+		CreateAccount account2 = new CreateAccount(driver);
+		int row = 1;
+		int NullinaRow = 0;
+		while(NullinaRow != 4) {
+			Boolean CableZd = false;
+			Boolean JackZd = false;
+			Boolean AccountZd = false;
+			Boolean canBeUpdated = false;
+			String jackID = ES.RWcell(ES.jackNum, row, null, 0);
+			String room = ES.RWcell(ES.roomNum, row, null, 0);
+			String date = "";
+			if(AccountCreate) {
+				date = ES.endDate;
+			}
+			if(jackID.equals("empty") || room.equals("empty")) {
+				ES.RWcell(ES.noteNum, row, "One or more field empty", 1);
+				NullinaRow++;
+			}
+			else {
+				if(update)
+				canBeUpdated = canBeUpdatedCheck(cable,jack,account,jackID,room);
+				//System.out.println(canBeUpdated + " for row " + row);
+				cableSwitch(cable);
+				cable.Searchcable(jackID);
+				cable2.Searchcable(room);
+				int i = cable.returnCables.size() - 1;
+				int j = cable2.returnCables.size() - 1;
+				/*
+				 * returned two results when searching room
+				 * returned none when searching for jack
+				 */
+				if(canBeUpdated && update) {
+					//System.out.println("In cable if how am  i here"+ jackID + " " + j );
+					canBeUpdated = checkVD();
+					if(!canBeUpdated) {
+						//make note needs to be updated manually
+						System.out.println("can't be updated, Z out as normal");
+					}
+				}
+				if(!canBeUpdated) {
+					//System.out.println("In cable else"+ jackID + " " + j + " " + cable2.returnCables);
+					while(j > -1) {
+						String s = "//*[@id=\"dgListView_" + cable2.returnCablesNum.get(j) + "_0\"]";
+						new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
+						WebElement jackfield = driver.findElement(By.xpath(s));
+						String title = jackfield.getAttribute("title");
+						//System.out.println("title and j: " + title + " "+ j);
+						if(!JackIDs.contains(title)) {
+							zCable(cable2.returnCablesX.get(j));
+							CableZd = true;
+						}
+						else {
+							System.out.println("jackid contained" + title);
+						}
+						j--;
+					}
+				}
+				jackSwitch(jack);
+				jack.Searchjack(jackID);
+				jack2.Searchjack(room);
+				i = jack.returnJacks.size() - 1;
+				j = jack2.returnJacks.size() - 1;
+				if(update && canBeUpdated) {
+					//System.out.println("In jack if"+ i + j);
+					canBeUpdated = checkVD();
+					if(!canBeUpdated) {//manual update needed
+						ES.RWcell(ES.noteNum, row, "Manual update needed", 1);
+					}
+				}
+				else { 
+					//System.out.println("In jack else"+ i + j);
+					while(j > - 1) {
+						String s = "//*[@id=\"dgListView_" + jack2.returnJacksNum.get(j) + "_0\"]";
+						new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
+						WebElement jackfield = driver.findElement(By.xpath(s));
+						String title = jackfield.getAttribute("title");
+						if(!JackIDs.contains(title)) {
+							zJack(jack2.returnJacks.get(j));
+							JackZd = true;
+						}
+						j--;
+					}
+				}
+				accountSwitch(account);
+				if(AccountCreate) {
+					account.searchAccount(jackID);
+					account2.searchAccount(room);
+					i = account.returnUsers.size() - 1;
+					j = account2.returnUsers.size() - 1;
+					if(update && canBeUpdated) {
+			
+					}
+					else {
+						//System.out.println("In account else"+ i + j);
+						while(j > -1) {
+							String s = "//*[@id=\"dgListView_" + account2.returnUsersNum.get(j) + "_0\"]";
+							new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
+							WebElement jackfield = driver.findElement(By.xpath(s));
+							String title = jackfield.getAttribute("title");
+							if(!JackIDs.contains(title)) {
+								endDate(account2.returnUsersX.get(j),date);
+								AccountZd = true;
+							}
+							j--;
+						}
+					}
+					Reset();
+					if(CableZd && JackZd && AccountZd) {
+						/*
+						 * Maybe?
+						 * or maybe remove from list
+						 * then when you create you can just see if that jack is on the list
+						 * and create if it is there? maybe idk bye
+						 */
+						ZdOut.set(row - 1, true);
+					}
+					else if (canBeUpdated) {
+						twoLeft.add(row);
+					}
+				}
+				else {
+					if(CableZd && JackZd) {
+						ZdOut.set(row - 1, true);
+					}
+					else if (canBeUpdated) {
+						twoLeft.add(row);
+					}
+					Reset();
+				}
+				NullinaRow = 0;
+			}
+			row++;
+		}
+		System.out.println(row);
+	}
+	
+	public void getAllJacks(Readexcel ES) {
+		int row = 1;
+		int NullinaRow = 0;
+		while(NullinaRow != 4) {
+			String jack = ES.RWcell(ES.jackNum, row, null, 0);
+			String room = ES.RWcell(ES.roomNum, row, null, 0);
+			if(room.equals("empty")) {
+				NullinaRow++;
+			}
+			else {
+				JackIDs.add(jack);
+				allRooms.add(room);
+				ZdOut.add(false);
+				if(jack.contains("AA-D")) {
+					String V = jack.substring(0, jack.length() - 1);
+					JackIDs.add(V + "V");
+					ZdOut.add(false);
+					
+				}
+				NullinaRow = 0;
+			}
+			row++;
+		}
+	}
+	
+	public void zCable(String a) throws InterruptedException {
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(a)));
+		WebElement field = driver.findElement(By.xpath(a));
+		Actions act = new Actions(driver);
+		act.moveToElement(field).click().click().perform();
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DESCRIPTION\"]")));
+		WebElement jackfield = driver.findElement(By.xpath("//*[@id=\"DESCRIPTION\"]"));
+		String jack = jackfield.getAttribute("value"); 
+		jackfield.clear();
+		//System.out.println(jack);
+		String zjack = "z"+jack;
+		jackfield.sendKeys(zjack);
+		WebElement closetfield = driver.findElement(By.xpath("//*[@id=\"ORIGDISTRIBUTIONSEQ_DISTRIBUTIONID\"]"));
+		closetfield.clear();
+		closetfield.sendKeys("z");
+		WebElement roomfield = driver.findElement(By.xpath("//*[@id=\"TERMDISTRIBUTIONSEQ_DISTRIBUTIONID\"]"));
+		roomfield.clear();
+		roomfield.sendKeys("z");
+		driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
+		Thread.sleep(2000);
+		//String parentWindow = driver.getWindowHandle();
+		waitForAlert();
+		//driver.switchTo().alert().accept();
+		//driver.switchTo().window(parentWindow);
+		Thread.sleep(2000);
+	}
+	
+	public void zJack(String s) {
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
+		WebElement a = driver.findElement(By.xpath(s));
+		Actions act = new Actions(driver);
+		act.moveToElement(a).click().click().perform();
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"JACKID\"]")));
+		WebElement jackfield = driver.findElement(By.xpath("//*[@id=\"JACKID\"]"));
+		String oldjack = jackfield.getAttribute("value"); 
+		jackfield.clear();
+		String zjack = "z"+oldjack;
+		jackfield.sendKeys(zjack);
+		driver.findElement(By.xpath("//*[@id=\"BUTTON_3\"]")).click();
+	}
+	
+	public void endDate(String a, String date) {
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(a)));
+		WebElement element = driver.findElement(By.xpath(a));
+		Actions act = new Actions(driver);
+		act.moveToElement(element).click().click().perform();
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DATECLOSED\"]")));
+		driver.findElement(By.xpath("//*[@id=\"DATECLOSED\"]")).sendKeys(date);
+		driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
+	}
+	
+	public Boolean checkVD() {
+		String R1 = "//*[@id=\"dgListView_" + 0 + "_0\"]";
+		String R2 = "//*[@id=\"dgListView_" + 1 + "_0\"]";
+		
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(R1)));
+		WebElement jackfield = driver.findElement(By.xpath(R1));
+		String titleR1 = jackfield.getAttribute("title");
+		
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(R2)));
+		jackfield = driver.findElement(By.xpath(R2));
+		String titleR2 = jackfield.getAttribute("title");
+		//System.out.println("R1 AND R2: " +titleR1 + " " + titleR2);
+		if(titleR1.contains("AA-D") && titleR2.contains("AA-V")) {
+			String NewR1 = titleR1.substring(0, titleR1.length() - 4);
+			String R1B1 = NewR1 + "B1-D";
+			//System.out.println("New R1: " + NewR1 + " R1B1: " + R1B1);
+			if(JackIDs.contains(R1B1)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void cableSwitch(CreateCable cable) {
+		cable.Switchtocable();
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+	}
+	
+	public void jackSwitch(CreateJack jack) {
+		driver.switchTo().parentFrame();
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("contents")));
+		driver.switchTo().frame(driver.findElement(By.name("contents")));
+		driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+		driver.switchTo().parentFrame();
+		driver.switchTo().parentFrame();
+		jack.SwitchTojack();
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+	}
+	
+	public void accountSwitch(CreateAccount account) {
+		driver.switchTo().parentFrame();
+		driver.switchTo().parentFrame();
+		account.switchToAccount();
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+	}
+	
+	public void Reset() {
+		driver.switchTo().parentFrame();
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("contents")));
+		driver.switchTo().frame(driver.findElement(By.name("contents")));
+		driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+		driver.findElement(By.xpath("//*[@id=\"td15\"]")).click();
+		driver.switchTo().parentFrame();
+		driver.switchTo().parentFrame();
+	}
+	
+	/*
+	 * Can be updated logic
+	 * if there is two cables, two jacks, and at least 1 account - it can be updated
+	 * 
+	 * if there is more than two cables and jacks, search jack list and see if the room is listed on there more than once
+	 * 
+	 */
+	public boolean canBeUpdatedCheck(CreateCable cable, CreateJack jack, CreateAccount account, String jackid, String room) throws InterruptedException {
+		cableSwitch(cable);
+		int cSize = cable.Searchcable(room);
+		ArrayList<WebElement> cRoom = cable.returnCables;
+		int cSize2 = cable.Searchcable(jackid);
+		ArrayList<WebElement> cJack = cable.returnCables;
+		jackSwitch(jack);
+		int jSize = jack.Searchjack(room);
+		ArrayList<WebElement> jRoom = cable.returnCables;
+		int jSize2 = jack.Searchjack(jackid);
+		ArrayList<WebElement> jJack = cable.returnCables;
+		accountSwitch(account);
+		account.searchAccount(room);
+		int aSize = account.returnUsers.size();
+		ArrayList<WebElement> aRoom = cable.returnCables;
+		account.searchAccount(jackid);
+		int aSize2 = account.returnUsers.size();
+		ArrayList<WebElement> aJack = cable.returnCables;
+		Reset();
+		Boolean TwoLeft =  ((cSize == 2 && cSize2 == 0) && (jSize == 2 && jSize2 == 0) && (aSize > 0 && aSize2 == 0));
+		if(TwoLeft) return true;
+		
+		if(cSize2 == 0 && jSize2 == 0 && aSize2 == 0) { //room was not returned
+			if(cSize > 0 && jSize > 0 && aSize > 0) { //there is a jack to update
+				int found = 0;
+				for(int i = 0; i < JackIDs.size(); ++i) {
+					if(JackIDs.get(i).contains(room)) {
+						found++;
+					}
+				}
+				if(found == 1) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public void waitForAlert() throws InterruptedException
+	{
+	   int i=0;
+	   while(i++<5)
+	   {
+	        try
+	        {
+	        	driver.switchTo().alert().accept();
+	            break;
+	        }
+	        catch(NoAlertPresentException e)
+	        {
+	          Thread.sleep(4000);
+	          continue;
+	        }
+	   }
+	}
+	
+}
+
+
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+FULL READ EXCEL BEFORE MASTER
+
+package workA;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList; 
+import java.io.IOException;  
+import java.util.Iterator;  
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Cell;  
+import org.apache.poi.ss.usermodel.Row;  
+import org.apache.poi.xssf.usermodel.XSSFSheet;  
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;  
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import java.util.Scanner;
+
+public class Readexcel {
+	String sheetName;
+	
+	String buildingCol;
+	int buildingNum;
+	String buildingCode;
+	
+	String closetCol;
+	int closetNum;
+	
+	String jackCol;
+	int jackNum;
+	
+	String roomCol;
+	int roomNum;
+	
+	String noteCol;
+	int noteNum;
+	
+	String startDate;
+	String endDate;
+	
+	
+	int start;
+	int stop;
+	
+	String accNumCol;
+	int accNum;
+	
+	Boolean PortCol = false;
+	String PortNbrCol;
+	int PortNbrNum;
+	
+	int sleepTime;
+	String path;
+	FileInputStream ss;
+	XSSFWorkbook wb;
+	Sheet s;
+	Scanner scanner;
+	public Readexcel(String text) {
+		System.out.println("Make sure file is closed before finishing entering cells");
+		scanner = new Scanner(System.in);
+		if(text.equals("createcable")) master(text); //CreateCableMenu();
+		if(text.equals("read")) CreateReadTableMenu();
+		if(text.equals("Jack")) CreateJackMenu();
+		//if(text.equals("fullupdate")) createFullCreateUpdateMenu();
+		if(text.equals("fullcreate")) createFullCreateUpdateMenu(false);
+		if(text.equals("fullcreateAC")) createFullCreateUpdateMenu(true);
+		if(text.equals("Zout")) zOut(false);
+		if(text.equals("FullZupdate")) createFullZupdate(false);
+		if(text.equals("ZoutAC")) zOut(true);
+		if(text.equals("FullZupdateAC")) createFullZupdate(true);
+		if(text.equals("folder3update")) Folder3update();
+		if(text.equals("CA")) CreateAccount();
+		if(text.equals("Verify")) Verify();
+		
+	}
+	
+
+	/*
+		if flag == 0 then reading
+		if flag == 1 then writing
+	*/
+	public String RWcell(int col1, int row1,String text, int flag) {
+		//path = "U://work/BUILDING.xlsx";
+		String value = "";
+	        try {
+	            FileInputStream inputStream = new FileInputStream(new File(path));
+	            Workbook workbook = WorkbookFactory.create(inputStream);
+	            Sheet sheet = workbook.getSheet(sheetName);
+	         
+	            if(flag == 0) { //reading
+	            	Row row=sheet.getRow(row1); 
+	            	if(row == null) {
+	        			return "empty";
+	        		}
+	        		Cell cell=row.getCell(col1); 
+	        		if(cell == null || cell.toString().equals("") || cell.toString().equals(" ") || cell.toString().equals("  ")) {
+	        			return "empty";
+	        		}
+	        		cell.setCellType(Cell.CELL_TYPE_STRING);
+	        		value=cell.getStringCellValue();  
+	        		//System.out.println(value);
+	        		return value;
+	            }
+	            else { //writing
+	            	 Row row = sheet.getRow(row1); 
+	            	 if(row == null) {
+		        			return "empty";
+		        	}
+		                Cell cell = row.createCell(noteNum);
+		                 cell.setCellValue(text);
+	            }
+
+	            inputStream.close();
+	            FileOutputStream outputStream = new FileOutputStream(path);
+	            workbook.write(outputStream);
+	            workbook.close();
+	            outputStream.close();
+	             
+	        } catch (IOException | EncryptedDocumentException
+	                | InvalidFormatException ex) {
+	        	System.out.println("failed to read or write file");
+	            ex.printStackTrace();
+	        }
+	        return value;
+		
+	}
+	
+	public int Convert(String convert) {
+		if(convert.length() > 1) {
+			//throw some error
+		}
+		char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k',
+				'l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+		for(int i = 0; i < alphabet.length;++i) {
+			if(convert.toLowerCase().equals(String.valueOf(alphabet[i]))) {
+				return i;
+			}
+		}
+		return -1;
+		
+	}
+	public String getBuildingCode(String jack) {
+		return jack.substring(0, 3);
+	}
+	
+	/*
+	  	createcable CreateCableMenu(); - closet jack room notes
+		"read" CreateReadTableMenu(); - jack pauseTime
+		"Jack" CreateJackMenu(); - closet jack room notes
+		"fullcreate" createFullCreateUpdateMenu(false); - closet jack room notes
+		"fullcreateAC" createFullCreateUpdateMenu(true); - closet jack room start date AccNum notes
+		"Zout" zOut(false); - jack room notes
+		"FullZupdate" createFullZupdate(false); - closet jack room enddate notes
+		"ZoutAC" zOut(true);- jack room notes end date?
+		"FullZupdateAC" createFullZupdate(true); - closet jack room enddate notes accNum start date
+		"folder3update" Folder3update(); - keep sep method
+		"CA" CreateAccount(); - jack accNum notes start date
+		"Verify" Verify(); - closet jack pausetime notes
+	 * 
+	 */
+	
+	public void master(String s) {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			if(s.equals("createcable"))
+				System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+				closetCol = scanner.next();
+				closetNum = Convert(closetCol);
+				
+				System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+				jackCol = scanner.next();
+				jackNum = Convert(jackCol);
+				
+				System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+				roomCol = scanner.next();
+				roomNum = Convert(roomCol);
+			
+			
+				System.out.println("Please enter the column (Letter) that contains the account number for UserI");
+				accNumCol = scanner.next();
+				accNum = Convert(accNumCol);
+				
+				System.out.println("Please enter a start date for user accounts that need an start date (format: 2/15/2021)");
+				startDate = scanner.next();
+				checkDate(startDate);
+				
+				System.out.println("Please enter a end date for user accounts that need an end date (format: 2/16/2021)");
+				endDate = scanner.next();
+				checkDate(endDate);
+				
+				System.out.println("Please enter an empty column (Letter) where notes can be written");
+				noteCol = scanner.next();
+				noteNum = Convert(noteCol);
+				
+				System.out.println("Please enter the amount of time (seconds) to pause in between searches");
+				sleepTime = scanner.nextInt();
+			
+				
+				String jack = RWcell(jackNum,1,"", 0);
+				buildingCode = getBuildingCode(jack);
+				String roomval = RWcell(roomNum,1,"", 0);
+				String closetval =  RWcell(closetNum,1,"", 0);
+				String accVal = "";
+				
+				accVal =  RWcell(accNum,1,"", 0);
+			
+			
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Closet column: " + closetCol + ", first row value: " + closetval);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Distribution column: " + roomCol + ", first row value: " + roomval);
+			
+			System.out.println("AccNum column: " + accNumCol + ", first row value: " + accVal);
+			System.out.println("Start Date: " + startDate + ", End Date: " + endDate);
+			
+			
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+	}
+	
+	public void Verify() {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			closetCol = scanner.next();
+			closetNum = Convert(closetCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the amount of time (seconds) to pause in between searches");
+			sleepTime = scanner.nextInt();
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			String jack = RWcell(jackNum,1,"", 0);
+	
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Sleep time: " + sleepTime);
+		
+			
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		}
+	}
+	
+	public void CreateAccount() {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the account number for UserI");
+			accNumCol = scanner.next();
+			accNum = Convert(accNumCol);
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			System.out.println("Please enter a start date for user accounts that need an start date (format: 2/15/2021)");
+			startDate = scanner.next();
+			checkDate(startDate);
+			
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			String accVal = "";
+			accVal =  RWcell(accNum,1,"", 0);
+	
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("AccNum column: " + accNumCol + ", first row value: " + accVal);
+			System.out.println("Start Date: " + startDate);
+		
+			
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		}
+		
+	}
+	
+	public void Folder3update() {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+		
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			System.out.println("Would you like to specify a column (Letter) for the portNbr");
+			System.out.println("If yes, it will enter port from specified column");
+			System.out.println("If no, it will search *jackid for port nbr");
+			System.out.println("y/n");
+			valid = scanner.next();
+			if(valid.equals("y") || valid.equals("yes")) {
+				PortNbrCol = scanner.next();
+				PortNbrNum = Convert(PortNbrCol);
+				PortCol = true;
+			}
+			valid = "n";
+			
+			
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+			
+			
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			if(PortCol) {
+				String port = RWcell(PortNbrNum,1,"", 0);
+				System.out.println("PortNbr column: " + jackCol +  ", first row value: " + port);
+			}
+			
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+	}
+	
+	public void createFullZupdate(Boolean accountCreate) {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			closetCol = scanner.next();
+			closetNum = Convert(closetCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+			roomCol = scanner.next();
+			roomNum = Convert(roomCol);
+			
+			if(accountCreate) {
+				System.out.println("Please enter the column (Letter) that contains the account number for UserI");
+				accNumCol = scanner.next();
+				accNum = Convert(accNumCol);
+				
+				System.out.println("Please enter a start date for user accounts that need an start date (format: 2/15/2021)");
+				startDate = scanner.next();
+				checkDate(startDate);
+				
+			}
+			
+			System.out.println("Please enter a end date for user accounts that need an end date (format: 2/16/2021)");
+			endDate = scanner.next();
+			checkDate(endDate);
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+			String roomval = RWcell(roomNum,1,"", 0);
+			String closetval =  RWcell(closetNum,1,"", 0);
+			String accVal = "";
+			if(accountCreate) 
+				accVal =  RWcell(accNum,1,"", 0);
+			
+			
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Closet column: " + closetCol + ", first row value: " + closetval);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Distribution column: " + roomCol + ", first row value: " + roomval);
+			if(accountCreate) {
+				System.out.println("AccNum column: " + accNumCol + ", first row value: " + accVal);
+				System.out.println("Start Date: " + startDate + ", End Date: " + endDate);
+			}
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+	}
+	
+	public void zOut(Boolean accountCreate) {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+			roomCol = scanner.next();
+			roomNum = Convert(roomCol);
+			
+			if(accountCreate) {
+				System.out.println("Please enter a end date for user accounts that need an end date (format: 2/15/2021)");
+				endDate = scanner.next();
+				checkDate(endDate);
+			}
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			String room =  RWcell(roomNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+
+			
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("room column: " + roomCol +  ", first row value: " + room);
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+	}
+	
+	public void createFullCreateUpdateMenu(Boolean AC) {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			closetCol = scanner.next();
+			closetNum = Convert(closetCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+			roomCol = scanner.next();
+			roomNum = Convert(roomCol);
+			if(AC) {
+				System.out.println("Please enter a start date for any new created user accounts (format: 2/15/2021)");
+				startDate = scanner.next();
+				checkDate(startDate);
+				
+	//			System.out.println("Please enter a end date for user accounts that need an end date (format: 2/15/21)");
+	//			endDate = scanner.next();
+	//			checkDate(endDate);
+				
+				System.out.println("Please enter the column (Letter) that contains the account number for UserI");
+				accNumCol = scanner.next();
+				accNum = Convert(accNumCol);
+			}
+			
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			String jack = RWcell(jackNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+			String roomval = RWcell(roomNum,1,"", 0);
+			String closetval =  RWcell(closetNum,1,"", 0);
+			
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			if(AC) {
+				System.out.println("Account Number: " + accNum);
+			}
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Distribution column: " + roomCol + ", first row value: " + roomval);
+			System.out.println("Closet column: " + closetCol + ", first row value: " + closetval);
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+	}
+	
+	public void CreateJackMenu() {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+			roomCol = scanner.next();
+			roomNum = Convert(roomCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			closetCol = scanner.next();
+			closetNum = Convert(closetCol);
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+			String roomval = RWcell(roomNum,1,"", 0);
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Distribution column: " + roomCol + ", first row value: " + roomval);
+			System.out.println("(y/n)");
+			valid = scanner.next();
+		} 
+		
+	}
+	
+	public void CreateReadTableMenu() {
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the amount of time (seconds) to pause in between searches");
+			sleepTime = scanner.nextInt();
+			
+			
+			String jack = RWcell(jackNum,1,"", 0);
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("(y/n)");
+			valid = scanner.next();
+			
+		}
+	}
+	
+	public void CreateCableMenu(){
+		String valid = "n";
+		System.out.println("Avoid whitespace when entering responses");
+		System.out.println("It is assumed that the first row is dedicated to the column name");
+		System.out.println("Read README.txt for more details");
+		while(valid.equals("n") || valid.equals("no")){
+			System.out.println("Enter the absolute file path to the excel spreadsheet ex. U://work/BUILDING.xlsx");
+			path = scanner.next();
+			
+			System.out.println("Please enter the sheet name");
+			sheetName = scanner.next();
+			
+	//		System.out.println("Please enter the column (Letter) that contains the building code");
+	//		buildingCol = scanner.next();
+	//		buildingNum = Convert(buildingCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			closetCol = scanner.next();
+			closetNum = Convert(closetCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete jackid (including -D)");
+			jackCol = scanner.next();
+			jackNum = Convert(jackCol);
+			
+			System.out.println("Please enter the column (Letter) that contains the complete Roomid (distribution id)");
+			roomCol = scanner.next();
+			roomNum = Convert(roomCol);
+			
+			System.out.println("Please enter an empty column (Letter) where notes can be written");
+			noteCol = scanner.next();
+			noteNum = Convert(noteCol);
+			
+	//		System.out.println("Please enter the number of the starting row (if starting from beginning enter 1)");
+	//		start = scanner.nextInt();
+	//		
+	//		System.out.println("Please enter the number of the last row");
+	//		stop = scanner.nextInt();
+			String jack = RWcell(jackNum,1,"", 0);
+			buildingCode = getBuildingCode(jack);
+			String closetval =  RWcell(closetNum,1,"", 0);
+			String roomval = RWcell(roomNum,1,"", 0);
+			System.out.println("\nDoes this information look correct?");
+			System.out.println("File path: " + path);
+			System.out.println("Sheet name: " + sheetName);
+			
+			System.out.println("Building Code: " + buildingCode);
+			System.out.println("Closet column: " + closetCol + ", first row value: " + closetval);
+			System.out.println("Jackid column: " + jackCol +  ", first row value: " + jack);
+			System.out.println("Distribution column: " + roomCol + ", first row value: " + roomval);
+			System.out.println("(y/n)");
+			valid = scanner.next();
+			if(valid.equals("n") || valid.equals("no")) {
+				
+			}
+		}
+	}
+	
+	public void checkDate(String date) {
+		
+	}
+	
+
+}
+
+        

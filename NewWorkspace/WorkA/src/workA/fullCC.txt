@@ -1,0 +1,165 @@
+public void create() throws InterruptedException {
+		Switchtocable();
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+		Readexcel ES = new Readexcel("createcable");
+		int row = 1;
+		int NullinaRow = 0;
+		Thread.sleep(300);
+		while(NullinaRow != 4) {
+			String jackid = ES.RWcell(ES.jackNum, row, null, 0);
+			String closet = ES.RWcell(ES.closetNum, row, null, 0);
+			String room = ES.RWcell(ES.roomNum, row, null, 0);
+			String building = ES.buildingCode;
+			if(room.equals("empty") || closet.equals("empty") || jackid.equals("empty")) {
+				ES.RWcell(ES.noteNum, row, "One or more field empty", 1);
+				NullinaRow++;
+			}
+			else {
+				if(Searchcable(jackid)) {
+					ES.RWcell(ES.noteNum, row, "Already Created", 1);
+				}
+				else {
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"cmdAdd\"]")));
+				 driver.findElement(By.xpath("//*[@id=\"cmdAdd\"]")).click();
+				 
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DESCRIPTION\"]")));
+				 WebElement cableid = driver.findElement(By.xpath("//*[@id=\"DESCRIPTION\"]"));
+				 cableid.sendKeys(jackid);
+				 
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"CABLETYPESEQ_DESCRIPTION\"]")));
+				 Select cableType = new Select(driver.findElement(By.xpath("//*[@id=\"CABLETYPESEQ_DESCRIPTION\"]")));
+				 cableType.selectByValue("1488");
+				 
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"ORIGCONNECTTYPESEQ_DESCRIPTION\"]")));
+				 Select connectionType = new Select(driver.findElement(By.xpath("//*[@id=\"ORIGCONNECTTYPESEQ_DESCRIPTION\"]")));
+				 connectionType.selectByValue("35");
+				 
+				 
+				 String parentWindow = driver.getWindowHandle();
+				 String closetWindow = null;
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"cmdORIGDISTRIBUTIONSEQ_DISTRIBUTIONID\"]")));
+				 WebElement closetButton = driver.findElement(By.xpath("//*[@id=\"cmdORIGDISTRIBUTIONSEQ_DISTRIBUTIONID\"]"));
+				 closetButton.click();
+				 Set<String> handles = driver.getWindowHandles(); // get all window handles
+				 Iterator<String> iterator = handles.iterator();
+				 while (iterator.hasNext()){
+					 closetWindow = iterator.next();
+				 }
+				 driver.switchTo().window(closetWindow); 
+				 
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtFilter1\"]")));
+				 driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]")).sendKeys(closet);
+				 driver.findElement(By.xpath("//*[@id=\"cmdGet\"]")).click();
+				 int numClosets = driver.findElements(By.xpath("//*[@id=\"dgListView_0\"]")).size();
+				 String closetText = driver.findElement(By.xpath("//*[@id=\"dgListView_0\"]")).getText();
+				 //Thread.sleep(500);
+				 //System.out.println(closet.subSequence(0, 1));
+				 if(!closet.equals(closetText.subSequence(0, closet.length()))) {
+					 driver.findElement(By.xpath("//*[@id=\"cmdAdd\"]")).click();
+					 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DISTRIBUTIONID\"]")));
+					 driver.findElement(By.xpath("//*[@id=\"DISTRIBUTIONID\"]")).sendKeys(closet);
+					 
+					 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DISTRIBUTIONTYPESEQ_DISTRIBUTIONTYPE\"]")));
+					 Select ClosetType = new Select(driver.findElement(By.xpath("//*[@id=\"DISTRIBUTIONTYPESEQ_DISTRIBUTIONTYPE\"]")));
+					 ClosetType.selectByValue("5");
+					 driver.findElement(By.xpath("//*[@id=\"LOCATIONSEQ_BUILDINGID\"]")).sendKeys(building);
+					 driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
+				 }
+				 else {
+					 WebElement a = driver.findElement(By.xpath("//*[@id=\"dgListView_0\"]"));
+					 Actions act = new Actions(driver);
+					act.moveToElement(a).click().click().perform();
+				 }
+			
+				 driver.switchTo().window(parentWindow); 
+				 
+		
+				 
+				 WebDriverWait wait = new WebDriverWait(driver, 15);
+		//		 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"TERMCONNECTTYPESEQ_DESCRIPTION\"]")));
+				 Thread.sleep(1000);
+				 connectionType = new Select(driver.findElement(By.xpath("//*[@id=\"TERMCONNECTTYPESEQ_DESCRIPTION\"]")));
+				 connectionType.selectByValue("35");
+				 
+				 parentWindow = driver.getWindowHandle();
+				 String roomWindow = null;
+				 WebElement roomButton = driver.findElement(By.xpath("//*[@id=\"cmdTERMDISTRIBUTIONSEQ_DISTRIBUTIONID\"]"));
+				 roomButton.click();
+				 handles = driver.getWindowHandles(); // get all window handles
+				 iterator = handles.iterator();
+				 while (iterator.hasNext()){
+					 roomWindow = iterator.next();
+				 }
+				 driver.switchTo().window(roomWindow); // switch to popup window
+				 
+				 wait = new WebDriverWait(driver, 45);
+				 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"cmdAdd\"]")));
+				 driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]")).sendKeys(room);
+				 driver.findElement(By.xpath("//*[@id=\"cmdGet\"]")).click();
+				 int size0 = driver.findElements(By.xpath("//*[@id=\"dgListView_0\"]")).size();
+				 int size1 = driver.findElements(By.xpath("//*[@id=\"dgListView_1\"]")).size();
+				 String roomText = driver.findElement(By.xpath("//*[@id=\"dgListView_0\"]")).getText();
+				 if(!room.equals(roomText.subSequence(0, room.length()))) {
+					 driver.findElement(By.xpath("//*[@id=\"cmdAdd\"]")).click();
+					 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"DISTRIBUTIONID\"]")));
+					 driver.findElement(By.xpath("//*[@id=\"DISTRIBUTIONID\"]")).sendKeys(room);
+					 
+					 Select distributionType = new Select(driver.findElement(By.xpath("//*[@id=\"DISTRIBUTIONTYPESEQ_DISTRIBUTIONTYPE\"]")));
+					 distributionType.selectByValue("6");
+					 
+					 driver.findElement(By.xpath("//*[@id=\"LOCATIONSEQ_BUILDINGID\"]")).sendKeys(building);
+					 
+					 driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
+//					 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtFilter1\"]")));
+//					 driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]")).sendKeys(room);
+//					 driver.findElement(By.xpath("//*[@id=\"cmdGet\"]")).click();
+					 
+				 }
+				 else {
+					 WebElement a = driver.findElement(By.xpath("//*[@id=\"dgListView_0\"]"));
+					 Actions act = new Actions(driver);
+					act.moveToElement(a).click().click().perform();
+				 }
+				 
+		
+				 driver.switchTo().window(parentWindow);  // switch back to parent window
+		 
+				 Thread.sleep(500);
+				 
+				 parentWindow = driver.getWindowHandle();
+				 String generateWindow = null;
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_DETAIL\"]")));
+				 WebElement generateButton = driver.findElement(By.xpath("//*[@id=\"BUTTON_DETAIL\"]"));
+				 generateButton.click();
+				 handles = driver.getWindowHandles(); // get all window handles
+				 iterator = handles.iterator();
+				 while (iterator.hasNext()){
+					 generateWindow = iterator.next();
+				 }
+				 driver.switchTo().window(generateWindow); // switch to popup window
+				 
+				 wait = new WebDriverWait(driver, 45);
+				 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtStartingPair\"]")));
+				 driver.findElement(By.xpath("//*[@id=\"txtStartingPair\"]")).sendKeys("1");
+				 driver.findElement(By.xpath("//*[@id=\"txtEndingPair\"]")).sendKeys("4");
+				 Select lineType = new Select(driver.findElement(By.xpath("//*[@id=\"selLineType\"]")));
+				 lineType.selectByValue("2");
+				 Select status = new Select(driver.findElement(By.xpath("//*[@id=\"selStatus\"]")));
+				 status.selectByValue("I");
+				 driver.findElement(By.xpath("//*[@id=\"cmdGenerate\"]")).click();
+				 
+				 
+		
+				 driver.switchTo().window(parentWindow);  // switch back to parent window
+				 new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")));
+				 
+				driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
+				}
+				 
+				 NullinaRow = 0;
+				 
+			}
+			row++;
+		}
+	}
