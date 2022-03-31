@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.Select;
 
 public class WorktagUpdate {
 	WebDriver driver;
@@ -29,6 +30,8 @@ public class WorktagUpdate {
 		SwitchtoEquipServices();
 		driver.switchTo().parentFrame();
 		driver.switchTo().frame(driver.findElement(By.name("main")));
+		 Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
+		 searchType.selectByValue("1343");
 		Readexcel ES = new Readexcel("WorkTagUpdate");
 		int row = 1;
 		int NullinaRow = 0;
@@ -195,7 +198,7 @@ public class WorktagUpdate {
 							FoundItem = true;
 							
 						}
-						else if(ItemNbr.get(i).contains("DENET") || ItemNbr.get(i).contains("ENETALL") || ItemNbr.get(i).contains("ENET")) {
+						else if(ItemNbr.get(i).equals("DENET") || ItemNbr.get(i).equals("ENETALL") || ItemNbr.get(i).equals("ENET")) {
 							ES.RWcell(ES.noteNum, row, "$7", 1);
 							FoundItem = true;
 							
@@ -286,6 +289,7 @@ public class WorktagUpdate {
 				new WebDriverWait(driver, 45).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"td63\"]")));
 				WebElement element = driver.findElement(By.xpath("//*[@id=\"td63\"]"));
 				element.click();
+			
 				switched = true;
 			}catch(TimeoutException ex) {
 					System.out.println(ex);
@@ -296,6 +300,7 @@ public class WorktagUpdate {
 	}
 	
 	public int Searchcable(String cable) throws InterruptedException {
+		
 		int j = 0;
 		returnCables.clear();
 		returnCablesNum.clear();
