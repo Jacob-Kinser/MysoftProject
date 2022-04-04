@@ -121,7 +121,7 @@ public class WorktagUpdate {
 				if(manUpdate) {
 					System.out.println("manual update " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
 					System.out.println("jack ret size " + jackidRet.size());
-					newLine = newjackid + ", " + "Manual update needed";
+					//newLine = newjackid + ", " + "Manual update needed";
 					//ES.RWcell(ES.jackNum, row, newLine, 1);
 					/*
 					 * jackid = full jackid
@@ -160,16 +160,37 @@ public class WorktagUpdate {
 					//size == 1, GOOD
 					//if not, manual update
 					if(jackidRet.size() == 1) {
+						manUpdate = false;
+						worktag = GrabWorktag(returnCablesX.get(0));
+						newLine = newjackid + ", " + worktag;
+					}
+					else if(jackidRet.size() == 2) {
+						if(jackidRet.get(0).equals(jackidRet.get(1)) && jackidRet.get(0).contains("UPS") && jackidRet.get(1).contains("UPS")) {
+							returnCables.remove(1);
+							returnCablesX.remove(1);
+							returnCablesNum.remove(1);
+							ItemNbr.remove(1);
+							jackidRet.remove(1);
+							manUpdate = false;
+							worktag = GrabWorktag(returnCablesX.get(0));
+							newLine = newjackid + ", " + worktag;
+						}
+						else {
+							ES.RWcell(ES.jackNum, row, jackid, 1);
+							ES.RWcell(ES.noteNum, row, "Manual Update needed", 1);
+						}
 						
 					}
 					else {
-						
+						ES.RWcell(ES.jackNum, row, jackid, 1);
+						ES.RWcell(ES.noteNum, row, "Manual Update needed", 1);
 					}
 					
 				}
 				
 				Boolean FoundItem = false;
 				if(!manUpdate && !noResults) {
+					
 					for(int i = 0; i < ItemNbr.size();++i) {
 						/*
 						 * Order of if statements is important
