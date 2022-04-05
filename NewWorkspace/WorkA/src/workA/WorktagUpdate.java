@@ -280,8 +280,12 @@ public class WorktagUpdate {
 		String title = e.getAttribute("value");//e.getAttribute("title"); 
 		//System.out.println(title);
 		try {
-			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")));
-			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]"));
+//			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")));
+//			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]"));
+//			a.click(); a.click();
+			
+			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_CANCEL\"]")));
+			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_CANCEL\"]"));
 			a.click(); a.click();
 		}catch(StaleElementReferenceException | NoSuchElementException | NullPointerException ex){
 			driver.navigate().refresh();

@@ -199,7 +199,7 @@ public class Auto {
         	a.update();
         }
         else if(myInt == 2) {
-        	//onlyApplication(driver);
+        	onlyApplication(driver);
         	System.out.println("Worktag Collection");
         	WorktagUpdate a = new WorktagUpdate(driver);
         	a.Update();
