@@ -5,6 +5,10 @@ Assumptions made throughout the project
 
 This project uses a firefox driver, make sure you have firefox installed VERSION: 89.0.1 (32-bit)
 
+This project was developed in eclipse IDE for java developers - 2021-03
+
+Java version 1.8
+
 Ensure you are connected to the VPN
 
 ******Excel files******

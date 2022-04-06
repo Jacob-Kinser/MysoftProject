@@ -50,6 +50,7 @@ public class WorktagUpdate {
 		 * covered vd
 		 */
 		while(NullinaRow !=7){
+			System.out.println("row: " + row);
 			//String jackid = "FJ101003B1-D";
 			String worktag = "";
 			String jackid = ES.RWcell(ES.jackNum, row, null, 0);
@@ -280,6 +281,10 @@ public class WorktagUpdate {
 		String title = e.getAttribute("value");//e.getAttribute("title"); 
 		//System.out.println(title);
 		try {
+			/*
+			 * I decided that instead of pressing exit and save after grabbing a worktag to press cancel
+			 * This is because some invalid port nbrs exist and you will get an error if try to save and exit one
+			 */
 //			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")));
 //			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]"));
 //			a.click(); a.click();
@@ -299,6 +304,10 @@ public class WorktagUpdate {
 		return title;
 	}
 	
+	
+	/*
+	 * This method will be called to switch the mysoft window to equipment services
+	 */
 	public void SwitchtoEquipServices() throws InterruptedException {
 		Boolean switched = false;
 		while(!switched) {
@@ -324,6 +333,11 @@ public class WorktagUpdate {
 		}
 	}
 	
+	
+	/*
+	 * This method will search the cable and put the results for each return in the arrays
+	 * X path is used to click into the elements
+	 */
 	public int Searchcable(String cable) throws InterruptedException {
 		
 		int j = 0;
