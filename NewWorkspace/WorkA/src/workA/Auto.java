@@ -59,9 +59,11 @@ public class Auto {
         } catch (Exception e) {
             System.out.println("There is no alert");
         }
-        System.out.println("A popup to mysoft should have appeared");
+        System.out.println("A popup to mysoft should have appeared ");
         System.out.println("Input your credentials");
-        System.out.println("Enter 1 here to continue, Enter 2 if the pop up did not appear");
+        System.out.println("Enter 1 here to continue \n"
+        		+ "Enter 2 if There is only an application tab on the left \n"
+        		+ "Enter 3 if the pop up did not appear");
         Scanner scanner = new Scanner(System.in);
         int myInt = scanner.nextInt();
         if(myInt == 1) {
@@ -69,112 +71,17 @@ public class Auto {
         	//FirefoxProfile FO = new FirefoxProfile();
         }
         else if(myInt == 2) {
+        	onlyApplication(driver);
+        	System.out.println("Welcome to Mysoft");
+        }
+        else if(myInt == 3) {
         	System.out.println("Try running the program again");
         }
         else {
         	System.out.println("Unexpected input, exiting");
         }
         
-//        CreateAccount ca = new CreateAccount(driver);
-//        ca.switchToAccount();
-//        driver.switchTo().parentFrame();
-//		driver.switchTo().frame(driver.findElement(By.name("main")));
-//        ca.fullCreate("X991012B1-D", "5/17/2021", "4444");
-        
-//        CreateJack cj = new CreateJack(driver);
-//        cj.SwitchTojack();
-//        driver.switchTo().parentFrame();
-//		driver.switchTo().frame(driver.findElement(By.name("main")));
-//		System.out.println(cj.Searchjack("X991012"));
-//		System.out.println(cj.Searchjack("X99101212121"));
-//        CreateCable cable = new CreateCable(driver);
-//        cable.Switchtocable();
-//		driver.switchTo().parentFrame();
-//		driver.switchTo().frame(driver.findElement(By.name("main")));
-//		cable.Searchcable("X991012");
-//		for(int i = 0; i < cable.returnCables.size();++i){
-//			String s = "//*[@id=\"dgListView_" + i + "_0\"]";
-//			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
-//			WebElement jackfield = driver.findElement(By.xpath(s));
-//			String title = jackfield.getAttribute("title");
-//			System.out.println("title " + i + ": " + title);
-//		}
-		
-//        	CreateJack cable = new CreateJack(driver);
-//        	cable.SwitchTojack();
-//			driver.switchTo().parentFrame();
-//			driver.switchTo().frame(driver.findElement(By.name("main")));
-//			cable.Searchjack("X991012");
-//			for(int i = 0; i < cable.returnJacks.size();++i){
-//				String s = "//*[@id=\"dgListView_" + i + "_0\"]";
-//				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
-//				WebElement jackfield = driver.findElement(By.xpath(s));
-//				String title = jackfield.getAttribute("title");
-//				System.out.println("title " + i + ": " + title);
-//			}
-        
-//    	CreateAccount cable = new CreateAccount(driver);
-//    	cable.switchToAccount();
-//		driver.switchTo().parentFrame();
-//		driver.switchTo().frame(driver.findElement(By.name("main")));
-//		cable.searchAccount("j402220b");
-//		System.out.println("return size: " + cable.returnUsers.size());
-//		for(int i = 0; i < cable.returnUsers.size();++i){
-//			String s = "//*[@id=\"dgListView_" + cable.returnUsersNum.get(i) + "_0\"]";
-//			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(s)));
-//			WebElement jackfield = driver.findElement(By.xpath(s));
-//			String title = jackfield.getAttribute("title");
-//			System.out.println("title " + cable.returnUsersNum.get(i) + ": " + title);
-//		}
-         fullZout z = new fullZout(driver,false);
-    	CreateCable cable = new CreateCable(driver);
-		CreateJack jack = new CreateJack(driver);
-		CreateAccount account = new CreateAccount(driver);
-		
-//		cable.fullCreate("E6302B1-D", "E63", "E63-BC", "E6302");
-//		cable.Searchcable("X99");
-//		//z.zCable("//*[@id=\"dgListView_0\"]");
-////		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(cable.returnCablesX.get(0))));
-////		WebElement field = driver.findElement(By.xpath(cable.returnCablesX.get(0)));
-////		Actions act = new Actions(driver);
-////		act.moveToElement(field).click().click().perform();
-////		Thread.sleep(5000);
-////		driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")).click();
-//		z.jackSwitch(jack);
-//		jack.fullCreate("E6302B1-D", "E6302",  "E63");
-//		jack.Searchjack("x99");
-//		//z.accountSwitch(account);
-//		//account.searchAccount("x99");
-//		z.Reset();
-//		
-//		z.cableSwitch(cable);
-//		cable.Searchcable("X991010");
-//		z.jackSwitch(jack);
-//		jack.Searchjack("x991010");
-//		driver.navigate().refresh();
-//		Thread.sleep(1500);
-//		z.accountSwitch(account);
-//		account.searchAccount("x99");
-//		z.Reset();
-//		
-//		z.cableSwitch(cable);
-//		cable.Searchcable("X991011");
-//		z.jackSwitch(jack);
-//		jack.Searchjack("x991011");
-//		z.Reset();
-		
-//		for(int i = 0; i < 1000;++i) {
-//			z.cableSwitch(cable);
-//			cable.Searchcable("E63G70EB1-D");
-//			z.jackSwitch(jack);
-//			jack.Searchjack("E63G70EB1-D");
-//			z.accountSwitch(account);
-//			account.searchAccount("E63G70EB1-D");
-//			z.Reset();
-//			if(cable.returnCables.size() != 1 || jack.returnJacks.size() != 1 || account.returnUsers.size() != 1)
-//			System.out.println("i: " + i + " cable size: " + cable.returnCables.size() + " jack size: " + jack.returnJacks.size() + " account size: " + account.returnUsers.size());
-//			
-//		}
+
 			
 		
         System.out.println("Select option");
@@ -199,7 +106,7 @@ public class Auto {
         	a.update();
         }
         else if(myInt == 2) {
-        	onlyApplication(driver);
+        	
         	System.out.println("Worktag Collection");
         	WorktagUpdate a = new WorktagUpdate(driver);
         	a.Update();

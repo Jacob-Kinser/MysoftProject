@@ -176,6 +176,32 @@ public class WorktagUpdate {
 							worktag = GrabWorktag(returnCablesX.get(0));
 							newLine = newjackid + ", " + worktag;
 						}
+						else if(ItemNbr.get(0).contains("TSPORT") || ItemNbr.get(1).contains("TSPORT")) {
+							if(jackidRet.get(0).equals(jackidRet.get(1))) {
+								if(ItemNbr.get(0).contains("TSPORT")) {
+									returnCables.remove(0);
+									returnCablesX.remove(0);
+									returnCablesNum.remove(0);
+									ItemNbr.remove(0);
+									jackidRet.remove(0);
+									manUpdate = false;
+									worktag = GrabWorktag(returnCablesX.get(0));
+									newLine = newjackid + ", " + worktag;
+								}
+								
+								else if(ItemNbr.get(1).contains("TSPORT")) {
+									returnCables.remove(1);
+									returnCablesX.remove(1);
+									returnCablesNum.remove(1);
+									ItemNbr.remove(1);
+									jackidRet.remove(1);
+									manUpdate = false;
+									worktag = GrabWorktag(returnCablesX.get(0));
+									newLine = newjackid + ", " + worktag;
+								}
+							}
+						}
+						
 						else {
 							ES.RWcell(ES.jackNum, row, jackid, 1);
 							ES.RWcell(ES.noteNum, row, "Manual Update needed", 1);
