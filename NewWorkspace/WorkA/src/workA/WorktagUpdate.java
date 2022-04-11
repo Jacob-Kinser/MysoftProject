@@ -49,7 +49,7 @@ public class WorktagUpdate {
 		 * add -d B jack is always -D
 		 * covered vd
 		 */
-		while(NullinaRow !=14){
+		while(NullinaRow !=20){
 			System.out.println("row: " + row);
 			//String jackid = "FJ101003B1-D";
 			String worktag = "";
