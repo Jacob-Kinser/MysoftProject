@@ -35,28 +35,14 @@ public class WorktagUpdate {
 		Readexcel ES = new Readexcel("WorkTagUpdate");
 		int row = 1;
 		int NullinaRow = 0;
-		/*
-		 * > 2 flag manual tag
-		 */
-		/*
-		 * J402200B1-D 	Two returns
-		 * J402200 three returns with one end date
-		 * fj101003b1-d one return
-		 * K551102B2-D two returns one AP
-		 * need manual tag example
-		 * scenarios covered
-		 * 
-		 * add -d B jack is always -D
-		 * covered vd
-		 */
-		while(NullinaRow !=20){
+		
+		
+		while(NullinaRow !=20){ //go through the jacks until there are 20 empty rows, can change this number to be whatever you want
 			System.out.println("row: " + row);
-			//String jackid = "FJ101003B1-D";
 			String worktag = "";
-			String jackid = ES.RWcell(ES.jackNum, row, null, 0);
+			String jackid = ES.RWcell(ES.jackNum, row, null, 0); //read the worktag from the next line
 			String newjackid = jackid;
-			if(jackid.equals("empty")) {
-				//ES.RWcell(ES.noteNum, row, "One or more field empty", 1);
+			if(jackid.equals("empty")) { //if theres no jack, add to null counter
 				NullinaRow++;
 			}
 			else {
@@ -69,16 +55,16 @@ public class WorktagUpdate {
 					Searchcable(jackid);
 				}
 				else Searchcable(trimmedJackid);
-				if(returnCables.size() == 1) {
+				if(returnCables.size() == 1) { //only one return
 					System.out.println("first return size == 1 " + jackid);
 					worktag = GrabWorktag(returnCablesX.get(0));
 					newjackid = addEnd(jackid, jackidRet.get(0));
 					newLine = newjackid + ", " + worktag;
 				}
-				else if(returnCables.size() == 2) {
+				else if(returnCables.size() == 2) { // two returns
 					if(ItemNbr.get(0).toLowerCase().contains("ap") || ItemNbr.get(1).toLowerCase().contains("ap")) {
 						//check if ap is jackid - -d + W
-						if((ItemNbr.get(0).contains("AP") || ItemNbr.get(1).contains("AP"))) {
+						if((ItemNbr.get(0).contains("AP") || ItemNbr.get(1).contains("AP"))) { //checks for AP
 							System.out.println("AP " + jackid);
 							worktag = GrabWorktag(returnCablesX.get(0));
 							newjackid = addEnd(jackid, jackidRet.get(0));
@@ -88,7 +74,7 @@ public class WorktagUpdate {
 						
 						
 					}
-					else { //manual update
+					else { //2 returns but was not an AP, manual update
 						manUpdate = true;
 						//make W jackid
 						//iterate through return jacks
@@ -100,9 +86,9 @@ public class WorktagUpdate {
 					}
 						
 				}
-				else if(returnCables.size() > 2) {
+				else if(returnCables.size() > 2) { //more than 2 returns
 					Searchcable(jackid);
-					if(returnCables.size() == 1) {
+					if(returnCables.size() == 1) { //search again with -D at the end
 						System.out.println("2nd ret size = 1 " + jackid);
 						worktag = GrabWorktag(returnCablesX.get(0));
 						newjackid = addEnd(jackid, jackidRet.get(0));
@@ -119,6 +105,10 @@ public class WorktagUpdate {
 					noResults = true;
 				}
 				NullinaRow = 0;
+				/*
+				 * This if block is if there are still more than 2 returns
+				 * will try and eliminate returned jackids by checking them in depth
+				 */
 				if(manUpdate) {
 					System.out.println("manual update " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
 					System.out.println("jack ret size " + jackidRet.size());
@@ -174,6 +164,7 @@ public class WorktagUpdate {
 							jackidRet.remove(1);
 							manUpdate = false;
 							worktag = GrabWorktag(returnCablesX.get(0));
+							newjackid = addEnd(jackid, jackidRet.get(0)); //added
 							newLine = newjackid + ", " + worktag;
 						}
 						else if(ItemNbr.get(0).contains("TSPORT") || ItemNbr.get(1).contains("TSPORT")) {
@@ -186,6 +177,7 @@ public class WorktagUpdate {
 									jackidRet.remove(0);
 									manUpdate = false;
 									worktag = GrabWorktag(returnCablesX.get(0));
+									newjackid = addEnd(jackid, jackidRet.get(0)); //added
 									newLine = newjackid + ", " + worktag;
 								}
 								
@@ -197,6 +189,7 @@ public class WorktagUpdate {
 									jackidRet.remove(1);
 									manUpdate = false;
 									worktag = GrabWorktag(returnCablesX.get(0));
+									newjackid = addEnd(jackid, jackidRet.get(0));
 									newLine = newjackid + ", " + worktag;
 								}
 							}
@@ -222,12 +215,12 @@ public class WorktagUpdate {
 						/*
 						 * Order of if statements is important
 						 */
-						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802")) {
+						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802") || ItemNbr.get(i).contains("9120")) {
 							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-INDOOR", 1);
 							FoundItem = true;
 						
 						}
-						else if(ItemNbr.get(i).contains("702") || ItemNbr.get(i).contains("9120")) {
+						else if(ItemNbr.get(i).contains("702") || ItemNbr.get(i).contains("9105")) {
 							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-HOSPITALITY", 1);
 							FoundItem = true;
 							
@@ -273,9 +266,9 @@ public class WorktagUpdate {
 			if(!cutsheetID.toUpperCase().contains("-D") && retjackidStr.toUpperCase().contains("-D")) {
 				return jackid+"-D";
 			}
-			if(!cutsheetID.toUpperCase().contains("-DV") && retjackidStr.toUpperCase().contains("-DV")) {
-				return jackid+"-DV";
-			}
+//			if(!cutsheetID.toUpperCase().contains("-DV") && retjackidStr.toUpperCase().contains("-DV")) {
+//				return jackid+"-DV";
+//			}
 			if(!cutsheetID.toUpperCase().contains("-VD") && retjackidStr.toUpperCase().contains("-VD")) {
 				return jackid+"-VD";
 			}
@@ -314,7 +307,10 @@ public class WorktagUpdate {
 //			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]")));
 //			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_SAVEANDEXIT\"]"));
 //			a.click(); a.click();
-			
+			/*
+			 * wait for the cancel button to become available
+			 * click it twice
+			 */
 			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"BUTTON_CANCEL\"]")));
 			a = driver.findElement(By.xpath("//*[@id=\"BUTTON_CANCEL\"]"));
 			a.click(); a.click();
