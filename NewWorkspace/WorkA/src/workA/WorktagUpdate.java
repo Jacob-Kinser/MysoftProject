@@ -27,12 +27,17 @@ public class WorktagUpdate {
 	}
 	
 	public void Update() throws InterruptedException {
+		/*
+		 * These next few lines will switch your window to equipment services
+		 * will switch your driver back into the main frame 
+		 * the Select searchType takes the drop down and ensures you are searching by UserID
+		 */
 		SwitchtoEquipServices();
 		driver.switchTo().parentFrame();
 		driver.switchTo().frame(driver.findElement(By.name("main")));
 		 Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
 		 searchType.selectByValue("1343");
-		Readexcel ES = new Readexcel("WorkTagUpdate");
+		Readexcel ES = new Readexcel("WorkTagUpdate"); //This will have the user input the column for jackid
 		int row = 1;
 		int NullinaRow = 0;
 		
@@ -48,21 +53,21 @@ public class WorktagUpdate {
 			else {
 				boolean manUpdate = false;
 				boolean noResults = false;
-				String newLine = jackid;
-				String trimmedJackid = TrimJackid(jackid);
+				String newLine = jackid; //this variable is what gets printed back into the excel sheet
+				String trimmedJackid = TrimJackid(jackid); //take the -D off the end of the jack, will return none if there is no -D
 				if(trimmedJackid.equals("none")) {
 					//System.out.println("jackid none " + jackid + " " + jackid.contains("-d") + " " + jackid.toUpperCase().contains("-D"));
-					Searchcable(jackid);
+					Searchcable(jackid); //if theres no -D search normal jackid
 				}
-				else Searchcable(trimmedJackid);
+				else Searchcable(trimmedJackid); //search with trimmed jackid
 				if(returnCables.size() == 1) { //only one return
 					System.out.println("first return size == 1 " + jackid);
 					worktag = GrabWorktag(returnCablesX.get(0));
-					newjackid = addEnd(jackid, jackidRet.get(0));
+					newjackid = addEnd(jackid, jackidRet.get(0)); //add the -D/-dv etc back to the end
 					newLine = newjackid + ", " + worktag;
 				}
 				else if(returnCables.size() == 2) { // two returns
-					if(ItemNbr.get(0).toLowerCase().contains("ap") || ItemNbr.get(1).toLowerCase().contains("ap")) {
+					if(ItemNbr.get(0).toLowerCase().contains("ap") || ItemNbr.get(1).toLowerCase().contains("ap")) { //check if one return is an AP
 						//check if ap is jackid - -d + W
 						if((ItemNbr.get(0).contains("AP") || ItemNbr.get(1).contains("AP"))) { //checks for AP
 							System.out.println("AP " + jackid);
@@ -75,7 +80,7 @@ public class WorktagUpdate {
 						
 					}
 					else { //2 returns but was not an AP, manual update
-						manUpdate = true;
+						manUpdate = true; //flag as a manual update for now. check it again later in the code
 						//make W jackid
 						//iterate through return jacks
 						//check for matches
