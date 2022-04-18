@@ -79,14 +79,24 @@ public class WorktagUpdate {
 						
 						
 					}
-					else { //2 returns but was not an AP, manual update
-						manUpdate = true; //flag as a manual update for now. check it again later in the code
-						//make W jackid
-						//iterate through return jacks
-						//check for matches
-						System.out.println("manual update 1 " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
-						newLine = newjackid + ", " + "Manual update needed, two results (no ap)";
-						ES.RWcell(ES.jackNum, row, newLine, 1);
+					else {
+						Searchcable(jackid);
+						if(returnCables.size() == 1) { //search again with -D at the end
+							System.out.println("2nd ret size = 1 " + jackid);
+							worktag = GrabWorktag(returnCablesX.get(0));
+							newjackid = addEnd(jackid, jackidRet.get(0));
+							newLine = newjackid + ", " + worktag;
+							//ES.RWcell(ES.noteNum, row, newLine, 1);
+						}
+						else { //2 returns but was not an AP, manual update
+							manUpdate = true; //flag as a manual update for now. check it again later in the code
+							//make W jackid
+							//iterate through return jacks
+							//check for matches
+							System.out.println("manual update 1 " + jackid + " " + jackidRet.size() + " item nbrs found " + ItemNbr.size());
+							newLine = newjackid + ", " + "Manual update needed, two results (no ap)";
+							ES.RWcell(ES.jackNum, row, newLine, 1);
+						}
 						
 					}
 						
@@ -126,20 +136,63 @@ public class WorktagUpdate {
 					String Wjackid = "";
 					if(trimmedJackid.equals("none")) {
 						Wjackid = jackid + "W";
+//						if(jackid.charAt(jackid.length() - 2) == 'b' || (jackid.charAt(jackid.length() - 3) == 'b' && 
+//								jackid.charAt(jackid.length() - 2) != 'b')) {
+//							trimmedJackid = jackid;
+//							jackid = jackid + "-D";
+//						}
 					}
 					else {
 						Wjackid = trimmedJackid + "W";
 					
 					}
 					for(int i = 0; i < jackidRet.size(); ++i) {
+						String tempjackid = jackid;
+						String temptrimmedJackid = trimmedJackid;
+						if(trimmedJackid.equals("none")) {
+							temptrimmedJackid = jackid;
+							/*
+							 * Here if your cutsheet jackid has no ending
+							 * you add the ending based on what return jack 
+							 * you are looking at
+							 * even if a jack return has multiple endings
+							 * such as, if you search A041363AA
+							 * has these returns
+							 * A041363AA-VD
+							 * A041363AA-D
+							 * both of these will get caught and it will still get tagged as a manual return
+							 */
+							if(jackidRet.get(i).contains("-D")) {
+								tempjackid = jackid + "-D";
+							}
+							else if(jackidRet.get(i).contains("-DV")) {
+								tempjackid = jackid + "-DV";
+							}
+							else if(jackidRet.get(i).contains("-VD")) {
+								tempjackid = jackid + "-VD";
+							}
+						}
 						if(jackidRet.get(i).toLowerCase().contains(Wjackid.toLowerCase())) {
-							
+							System.out.println("here 1 " + jackidRet.get(i));
 						}
-						else if(jackidRet.get(i).toLowerCase().contains(jackid.toLowerCase())) {
-							
+						else if(jackidRet.get(i).toLowerCase().contains(tempjackid.toLowerCase())) {
+							System.out.println("here 2 "+ jackidRet.get(i));
 						}
-						else if(jackidRet.get(i).toLowerCase().contains(trimmedJackid.toLowerCase())) {
-							
+//						else if(jackidRet.get(i).toLowerCase().contains(temptrimmedJackid.toLowerCase())) {
+//							System.out.println("here 3 "+ jackidRet.get(i));
+//						}
+						else if(!jackidRet.get(i).toLowerCase().contains("*") && !jackidRet.get(i).toLowerCase().endsWith("w")) {
+							String trimmedRet = TrimJackid(jackidRet.get(i));
+							System.out.println(trimmedRet + "= " + trimmedJackid+ " " + jackid);
+							if(!temptrimmedJackid.toLowerCase().equals(trimmedRet.toLowerCase()) 
+									&& !tempjackid.toLowerCase().equals(trimmedRet.toLowerCase())) {
+								returnCables.remove(i);
+								returnCablesX.remove(i);
+								returnCablesNum.remove(i);
+								ItemNbr.remove(i);
+								jackidRet.remove(i);
+							}
+					
 						}
 						else {
 							returnCables.remove(i);
@@ -198,6 +251,13 @@ public class WorktagUpdate {
 									newLine = newjackid + ", " + worktag;
 								}
 							}
+						}
+						else if(ItemNbr.get(0).toLowerCase().contains("ap") || ItemNbr.get(1).toLowerCase().contains("ap")) {
+							System.out.println("AP " + jackid);
+							worktag = GrabWorktag(returnCablesX.get(0));
+							newjackid = addEnd(jackid, jackidRet.get(0));
+							newLine = newjackid + "W, " + worktag;
+							manUpdate = false;
 						}
 						
 						else {
