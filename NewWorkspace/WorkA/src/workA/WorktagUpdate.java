@@ -279,6 +279,9 @@ public class WorktagUpdate {
 					for(int i = 0; i < ItemNbr.size();++i) {
 						/*
 						 * Order of if statements is important
+						 * For example: if you checked if the item Nbr contains 702
+						 * before you check if it contains 3702
+						 * All 3702s would get checked as 702s
 						 */
 						if(ItemNbr.get(i).contains("3702") || ItemNbr.get(i).contains("3802") || ItemNbr.get(i).contains("9120")) {
 							ES.RWcell(ES.noteNum, row, "WIRELESS-AP-INDOOR", 1);
@@ -399,6 +402,10 @@ public class WorktagUpdate {
 		Boolean switched = false;
 		while(!switched) {
 			try {
+				/*
+				 * Mysoft HTML uses frames. The way selenium works is you need to be within the same frame as the element
+				 * you are trying to interact with
+				 */
 				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("mainFrame")));
 				driver.switchTo().frame(driver.findElement(By.name("mainFrame")));
 				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("contents")));
