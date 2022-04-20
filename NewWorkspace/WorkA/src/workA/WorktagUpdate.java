@@ -45,7 +45,7 @@ public class WorktagUpdate {
 		while(NullinaRow !=20){ //go through the jacks until there are 20 empty rows, can change this number to be whatever you want
 			System.out.println("row: " + row);
 			String worktag = "";
-			String jackid = ES.RWcell(ES.jackNum, row, null, 0); //read the worktag from the next line
+			String jackid = ES.RWcell(ES.jackNum, row, null, 0); //read the jack from the next line
 			String newjackid = jackid;
 			if(jackid.equals("empty")) { //if theres no jack, add to null counter
 				NullinaRow++;
@@ -211,6 +211,7 @@ public class WorktagUpdate {
 					if(jackidRet.size() == 1) {
 						manUpdate = false;
 						worktag = GrabWorktag(returnCablesX.get(0));
+						newjackid = addEnd(jackid, jackidRet.get(0));
 						newLine = newjackid + ", " + worktag;
 					}
 					else if(jackidRet.size() == 2) {
