@@ -38,6 +38,12 @@ public class Readexcel {
 	String noteCol;
 	int noteNum;
 	
+	String sourcePortCol;
+	int sourcePortNum;
+	
+	String desPortCol;
+	int desPortNum;
+	
 	String startDate;
 	String endDate;
 	
