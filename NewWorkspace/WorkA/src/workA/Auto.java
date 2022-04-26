@@ -87,7 +87,7 @@ public class Auto {
         System.out.println("Select option");
         System.out.println("1. Folder 3 -> 4");
         System.out.println("2. Worktag Collection");
-        System.out.println("3. ");
+        System.out.println("3. Generate Template");
         System.out.println("4. ");
         System.out.println("6. View Jacks");
         System.out.println("7. Full Create");
@@ -112,6 +112,9 @@ public class Auto {
         	a.Update();
 		}
         else if(myInt == 3) {
+			System.out.println("Generate Template");
+			GenerateTemplate a = new GenerateTemplate(driver);
+			a.generate();
 			
 		}
         else if(myInt == 4) {

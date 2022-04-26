@@ -1,12 +1,15 @@
 package workA;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import java.util.ArrayList;
 import java.io.FileOutputStream;
 import java.util.Scanner;
 
@@ -21,6 +24,10 @@ public class GenerateTemplate {
 	String filepath = "";
 	HSSFWorkbook workbook;
 	HSSFSheet sheet;
+	
+	ArrayList<String> closets = new ArrayList<>();
+	ArrayList<String> closetTypes = new ArrayList<>();
+	ArrayList<String> ReturnClosets = new ArrayList<>();
 	
 	public GenerateTemplate(WebDriver d) {
 		driver = d;
@@ -104,6 +111,78 @@ public class GenerateTemplate {
 	        }
 	}
 	
+	public void CheckCloset(String ClosetString) throws InterruptedException {
+		Boolean switched = false;
+		while(!switched) {
+			try {
+				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("mainFrame")));
+				driver.switchTo().frame(driver.findElement(By.name("mainFrame")));
+				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("contents")));
+			    driver.switchTo().frame(driver.findElement(By.name("contents")));
+			    new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"td1\"]")));
+			    new WebDriverWait(driver, 45).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"td1\"]")));
+				driver.findElement(By.xpath("//*[@id=\"td1\"]")).click();
+				new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"td6\"]")));
+				new WebDriverWait(driver, 45).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"td6\"]")));
+				WebElement element = driver.findElement(By.xpath("//*[@id=\"td6\"]"));
+				element.click();
+				switched = true;
+			}catch(TimeoutException ex) {
+					System.out.println(ex);
+					driver.navigate().refresh();
+					Thread.sleep(4000);
+			}
+		}
+			
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+		System.out.println(driver.findElements(By.name("main")).size());
+		
+		//select drop down
+		Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
+		 searchType.selectByValue("95");
+		
+		int j = 0;
+		ReturnClosets.clear();
+		while(ReturnClosets.size() == 0 && j != 3) {
+			//if(j == 1) System.out.println("caught one");
+			Boolean Ready = false;
+			while(!Ready) {
+				try {
+					new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"txtFilter1\"]")));
+					driver.findElement(By.xpath("//*[@id=\"txtFilter1\"]")).sendKeys(ClosetString);
+					new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"cmdGet\"]")));
+					new WebDriverWait(driver, 45).until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"cmdGet\"]")));
+					driver.findElement(By.xpath("//*[@id=\"cmdGet\"]")).click();
+					Ready = true;
+				}catch(StaleElementReferenceException | NoSuchElementException | NullPointerException ex){
+					driver.navigate().refresh();
+					Thread.sleep(5000);
+					CheckCloset(ClosetString);
+					driver.switchTo().parentFrame();
+					driver.switchTo().frame(driver.findElement(By.name("main")));
+					System.out.println("Caught stale element or no element: " + ex.getMessage());
+				}
+			}
+			ReturnClosets.clear();
+
+			int digit = 0;
+			String path = "//*[@id=\"dgListView_0_1\"]";
+			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
+			int size0 = driver.findElements(By.xpath(path)).size();
+			if(size0 == 1) {
+					
+			}
+			digit++;
+			path = "//*[@id=\"dgListView_" + digit + "\"]";
+			j++;
+		}
+
+		
+		driver.navigate().refresh();
+		Thread.sleep(4000);
+	}
+	
 	
 	/*
 	 * Example input C:/Users/jacob/Documents/WorkRepo/MysoftProject/BulkImport/Friley.xlsx
@@ -126,6 +205,9 @@ public class GenerateTemplate {
 		Thread.sleep(4000);
 		CreateCable cable = new CreateCable(driver);
 		cable.Switchtocable();
+		driver.switchTo().parentFrame();
+		driver.switchTo().frame(driver.findElement(By.name("main")));
+		System.out.println(driver.findElements(By.name("main")).size());
 		cable.Searchcable(sampleJackid.substring(0, 2));
 		if(cable.returnCables.size() > 0) {
 			title = driver.findElement(By.xpath("//*[@id=\"dgListView_0_2\"]")).getAttribute("title");
