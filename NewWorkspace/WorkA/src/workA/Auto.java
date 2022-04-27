@@ -114,6 +114,7 @@ public class Auto {
         else if(myInt == 3) {
 			System.out.println("Generate Template");
 			GenerateTemplate a = new GenerateTemplate(driver);
+			//a.generateFilepath("C:/Users/jacob/Documents/WorkRepo/MysoftProject/BulkImport/Friley.xlsx");
 			a.generate();
 			
 		}

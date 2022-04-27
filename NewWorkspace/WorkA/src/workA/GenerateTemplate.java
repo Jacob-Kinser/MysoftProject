@@ -28,18 +28,24 @@ public class GenerateTemplate {
 	ArrayList<String> closets = new ArrayList<>();
 	ArrayList<String> closetTypes = new ArrayList<>();
 	ArrayList<String> ReturnClosets = new ArrayList<>();
-	
-	public GenerateTemplate(WebDriver d) {
+	public GenerateTemplate()  {
+		
+	}
+	public GenerateTemplate(WebDriver d) throws InterruptedException {
 		driver = d;
 		//ask for filepaths
-		Readexcel ES = new Readexcel("WorkTagUpdate"); 
+		ES = new Readexcel("WorkTagUpdate"); 
 		promptUser();
+		createFile();
+		generate();
 	}
 	
-	public GenerateTemplate(WebDriver d, Readexcel f) {
+	public GenerateTemplate(WebDriver d, Readexcel f) throws InterruptedException {
 		driver = d;
 		ES = f;
 		promptUser();
+		createFile();
+		generate();
 	}
 	
 	public void generate() throws InterruptedException {
@@ -52,14 +58,24 @@ public class GenerateTemplate {
 		    String jackid = ES.RWcell(ES.jackNum, row, null, 0); 
 		    String Tag = ES.RWcell(ES.noteNum, row, null, 0); 
 		    String closet = ES.RWcell(ES.closetNum, row, null, 0); // grab from excel //need closet in excel sheet, since not all cables exist
+		    if(!closets.contains(closet) && !closet.equals("empty")) {
+		    	CheckCloset(closet);
+		    }
 		    String SourcePort = ES.RWcell(ES.sourcePortNum, row, null, 0); // grab from excel
 		    String TargetPort = ES.RWcell(ES.desPortNum, row, null, 0); // grab from excel
-		    String hostname = "MDF-SW-" + buildingCode + closet + "01.TELE.IASTATE.EDU"; //mdf vs idf?
-		    closet = buildingCode + "-" + closet;
+		    //closet = buildingCode + "-" + closet;
 		    if(jackid.equals("empty") || closet.equals("empty") || Tag.equals("empty") || SourcePort.equals("empty") || TargetPort.equals("empty")) {
 		    	NullinaRow++;
 		    }
 		    else {	   
+		    	int closetIndex = closets.indexOf(closet);
+		    	if(closetIndex == -1) {
+		    		System.out.println(closet);
+		    		System.out.println(closets);
+		    		System.out.println(closetTypes);
+		    		
+		    	}
+				String hostname = closetTypes.get(closetIndex) + "-SW-" + buildingCode + closet + "01.TELE.IASTATE.EDU"; 
 			    HSSFRow rowVals = sheet.createRow((short)row);
 			    rowVals.createCell(0).setCellValue(hostname);
 			    rowVals.createCell(1).setCellValue(SourcePort);
@@ -139,6 +155,7 @@ public class GenerateTemplate {
 		System.out.println(driver.findElements(By.name("main")).size());
 		
 		//select drop down
+		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("//*[@id=\"selSearchBy\"]")));
 		Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
 		 searchType.selectByValue("95");
 		
@@ -171,7 +188,24 @@ public class GenerateTemplate {
 			new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(path)));
 			int size0 = driver.findElements(By.xpath(path)).size();
 			if(size0 == 1) {
-					
+				closets.add(ClosetString);
+				String des = driver.findElement(By.xpath(path)).getAttribute("title");
+				if(des.toLowerCase().contains("mdf")) {
+					closetTypes.add("MDF");
+				}
+				else if(des.toLowerCase().contains("idf")) {
+					closetTypes.add("IDF");
+				}
+				else { //prompt user to enter
+					String type;
+					Scanner scanner = new Scanner(System.in);
+					System.out.println("Please enter closet type for closet " + ClosetString + " (mdf or idf)");
+					type = scanner.next();
+					scanner.close();
+					closetTypes.add(type.toUpperCase());
+					//add to des
+				}
+				
 			}
 			digit++;
 			path = "//*[@id=\"dgListView_" + digit + "\"]";
@@ -191,9 +225,11 @@ public class GenerateTemplate {
 	public String generateFilepath(String fullpath) {
 		int folderIndex = fullpath.lastIndexOf("/");
 		String oldFilename = fullpath.substring(folderIndex + 1);
-		fullpath = fullpath.substring(folderIndex, folderIndex);
+		//System.out.println(oldFilename);
+		fullpath = fullpath.substring(0, folderIndex + 1);
+		//System.out.println(fullpath);
 		int extentionsIndex = oldFilename.lastIndexOf(".");
-		String newFilename = oldFilename.substring(extentionsIndex) + "ImportTemplate.xlsx";
+		String newFilename = oldFilename.substring(0,extentionsIndex) + "ImportTemplate.xlsx";
 		fullpath += newFilename;
 		System.out.println(fullpath);
 		return fullpath;
@@ -233,16 +269,20 @@ public class GenerateTemplate {
 		ES.closetCol = scanner.next();
 		ES.closetNum = ES.Convert(ES.closetCol);
 		
-		System.out.println("Please enter the column (Letter) ");
+		//check if not full
+		
+		System.out.println("Please enter the column (Letter) for the source port");
 		ES.sourcePortCol = scanner.next();
 		ES.sourcePortNum = ES.Convert(ES.sourcePortCol);
 		
-		System.out.println("Please enter the column (Letter) ");
+		System.out.println("Please enter the column (Letter) for the destination port");
 		ES.desPortCol = scanner.next();
 		ES.desPortNum = ES.Convert(ES.desPortCol);
 		
 		
 		scanner.close();
+		
+		//print fields out
 	}
 	
 
