@@ -2,6 +2,8 @@ package workA;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Auto {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		System.out.println("Starting...");
 		String current;
 		File file2 = new File("");
@@ -114,8 +116,9 @@ public class Auto {
         else if(myInt == 3) {
 			System.out.println("Generate Template");
 			GenerateTemplate a = new GenerateTemplate(driver);
-			//a.generateFilepath("C:/Users/jacob/Documents/WorkRepo/MysoftProject/BulkImport/Friley.xlsx");
-			a.generate();
+			//GenerateTemplate a = new GenerateTemplate();
+			//a.generateFilepath("U:/Documents/workRepo/MysoftProject/BulkImport/MysoftDemo(702).xlsx");
+			//a.createFile();
 			
 		}
         else if(myInt == 4) {

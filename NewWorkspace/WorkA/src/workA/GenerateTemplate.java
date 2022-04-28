@@ -11,11 +11,24 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.io.FileOutputStream;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 
 public class GenerateTemplate {
@@ -28,30 +41,36 @@ public class GenerateTemplate {
 	ArrayList<String> closets = new ArrayList<>();
 	ArrayList<String> closetTypes = new ArrayList<>();
 	ArrayList<String> ReturnClosets = new ArrayList<>();
+	
+	 // This data needs to be written (Object[])
+    Map<String, Object[]> ImportRows = new TreeMap<String, Object[]>();
+        
 	public GenerateTemplate()  {
 		
 	}
-	public GenerateTemplate(WebDriver d) throws InterruptedException {
+	public GenerateTemplate(WebDriver d) throws InterruptedException, IOException {
 		driver = d;
 		//ask for filepaths
 		ES = new Readexcel("WorkTagUpdate"); 
 		promptUser();
-		createFile();
 		generate();
 	}
 	
-	public GenerateTemplate(WebDriver d, Readexcel f) throws InterruptedException {
+	public GenerateTemplate(WebDriver d, Readexcel f) throws InterruptedException, IOException {
 		driver = d;
 		ES = f;
 		promptUser();
-		createFile();
 		generate();
 	}
 	
-	public void generate() throws InterruptedException {
+	public void generate() throws InterruptedException, IOException {
+		ImportRows.put(
+	            "1",
+	            new Object[] { "SourceHostname", "SourcePort", "TargetHostname","TargetPort","MediaType","ColorCode","Notes","AP Type" });
 		String buildingCode = GrabBuildingCode(ES.RWcell(ES.jackNum, 1, null, 0));
 		System.out.println("Grabbing Building code with jack: " + " Got: " + buildingCode);
 		int row = 1;
+		int writeRow = 2;
 	    int NullinaRow = 0;
 	    while(NullinaRow !=20) {
 		    System.out.println("row: " + row);
@@ -76,55 +95,55 @@ public class GenerateTemplate {
 		    		
 		    	}
 				String hostname = closetTypes.get(closetIndex) + "-SW-" + buildingCode + closet + "01.TELE.IASTATE.EDU"; 
-			    HSSFRow rowVals = sheet.createRow((short)row);
-			    rowVals.createCell(0).setCellValue(hostname);
-			    rowVals.createCell(1).setCellValue(SourcePort);
-			    rowVals.createCell(2).setCellValue(buildingCode + "-" + closet + "-COPPERPATCH");
-			    rowVals.createCell(3).setCellValue(TargetPort);
-			    rowVals.createCell(4).setCellValue("");
-			    rowVals.createCell(5).setCellValue("");
-			    rowVals.createCell(6).setCellValue(jackid);
-			    rowVals.createCell(7).setCellValue(Tag);
+				
+				
+		        ImportRows.put(String.valueOf(writeRow), new Object[] {hostname,SourcePort,buildingCode + "-" + closet + "-COPPERPATCH",
+		        		TargetPort, "","",jackid,Tag});
+		        
+		        
 			    NullinaRow = 0;
+			    writeRow++;
 		    }
 		    row++;
 	    }
-	    try {
-		    FileOutputStream fileOut = new FileOutputStream(filepath);
-	        workbook.write(fileOut);
-	        fileOut.close();
-	        workbook.close();
-	    }catch ( Exception ex ) { //catch file not found exception
-            System.out.println(ex);
-        }
+	    createFile();
+	   
 	}
 	
 	/*
 	 * https://stackoverflow.com/questions/1176080/create-excel-file-in-java
 	 * create file, set headers
 	 */
-	public void createFile() {
-		 try {
-	            workbook = new HSSFWorkbook();
-	            sheet = workbook.createSheet("Sheet1");  
+	public void createFile() throws IOException {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("Sheet1");
+        XSSFRow row;
 
-	            HSSFRow rowhead = sheet.createRow((short)0);
-	            rowhead.createCell(0).setCellValue("SourceHostname");
-	            rowhead.createCell(1).setCellValue("SourcePort");
-	            rowhead.createCell(2).setCellValue("TargetHostname");
-	            rowhead.createCell(3).setCellValue("TargetPort");
-	            rowhead.createCell(4).setCellValue("MediaType");
-	            rowhead.createCell(5).setCellValue("ColorCode");
-	            rowhead.createCell(6).setCellValue("Notes");
-	            rowhead.createCell(7).setCellValue("AP Type");
-
-	            
-
-	            
-
-	        } catch ( Exception ex ) {
-	            System.out.println(ex);
-	        }
+        Set<String> keyid = ImportRows.keySet();
+  
+        int rowid = 0;
+  
+        // writing the data into the sheets...
+  
+        for (String key : keyid) {
+  
+            row = spreadsheet.createRow(rowid++);
+            Object[] objectArr = ImportRows.get(key);
+            int cellid = 0;
+  
+            for (Object obj : objectArr) {
+                Cell cell = row.createCell(cellid++);
+                cell.setCellValue((String)obj);
+            }
+        }
+  
+        // .xlsx is the format for Excel Sheets...
+        // writing the workbook into the file...
+        FileOutputStream out = new FileOutputStream(
+            new File(filepath));
+  
+        workbook.write(out);
+        out.close();
 	}
 	
 	public void CheckCloset(String ClosetString) throws InterruptedException {
@@ -143,6 +162,8 @@ public class GenerateTemplate {
 				WebElement element = driver.findElement(By.xpath("//*[@id=\"td6\"]"));
 				element.click();
 				switched = true;
+				driver.switchTo().parentFrame();
+				driver.switchTo().frame(driver.findElement(By.name("main")));
 			}catch(TimeoutException ex) {
 					System.out.println(ex);
 					driver.navigate().refresh();
@@ -150,14 +171,13 @@ public class GenerateTemplate {
 			}
 		}
 			
-		driver.switchTo().parentFrame();
-		driver.switchTo().frame(driver.findElement(By.name("main")));
-		System.out.println(driver.findElements(By.name("main")).size());
+		
+		//System.out.println(driver.findElements(By.name("main")).size());
 		
 		//select drop down
-		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("//*[@id=\"selSearchBy\"]")));
-		Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
-		 searchType.selectByValue("95");
+//		new WebDriverWait(driver, 45).until(ExpectedConditions.visibilityOfElementLocated(By.name("//*[@id=\"selSearchBy\"]")));
+//		Select searchType = new Select(driver.findElement(By.xpath("//*[@id=\"selSearchBy\"]")));
+//		 searchType.selectByValue("95");
 		
 		int j = 0;
 		ReturnClosets.clear();
@@ -284,6 +304,55 @@ public class GenerateTemplate {
 		
 		//print fields out
 	}
+	
+	/*
+	 * Create file code
+	 * 
+	 * 
+	 *  try {
+		    FileOutputStream fileOut = new FileOutputStream(filepath);
+	        workbook.write(fileOut);
+	        fileOut.close();
+	        workbook.close();
+	    }catch ( Exception ex ) { //catch file not found exception
+            System.out.println(ex);
+        }
+         HSSFRow rowVals = sheet.createRow((short)row);
+			    rowVals.createCell(0).setCellValue(hostname);
+			    rowVals.createCell(1).setCellValue(SourcePort);
+			    rowVals.createCell(2).setCellValue(buildingCode + "-" + closet + "-COPPERPATCH");
+			    rowVals.createCell(3).setCellValue(TargetPort);
+			    rowVals.createCell(4).setCellValue("");
+			    rowVals.createCell(5).setCellValue("");
+			    rowVals.createCell(6).setCellValue(jackid);
+			    rowVals.createCell(7).setCellValue(Tag);
+			    
+			    
+			    	public void createFile() {
+		 try {
+	            workbook = new HSSFWorkbook();
+	            sheet = workbook.createSheet("Sheet1");  
+
+	            HSSFRow rowhead = sheet.createRow((short)0);
+	            rowhead.createCell(0).setCellValue("SourceHostname");
+	            rowhead.createCell(1).setCellValue("SourcePort");
+	            rowhead.createCell(2).setCellValue("TargetHostname");
+	            rowhead.createCell(3).setCellValue("TargetPort");
+	            rowhead.createCell(4).setCellValue("MediaType");
+	            rowhead.createCell(5).setCellValue("ColorCode");
+	            rowhead.createCell(6).setCellValue("Notes");
+	            rowhead.createCell(7).setCellValue("AP Type");
+
+	            
+
+	            
+
+	        } catch ( Exception ex ) {
+	            System.out.println(ex);
+	        }
+	}
+	
+	 */
 	
 
 }
