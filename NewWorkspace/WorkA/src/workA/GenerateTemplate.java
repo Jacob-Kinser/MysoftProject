@@ -58,6 +58,8 @@ public class GenerateTemplate {
 	
 	public GenerateTemplate(WebDriver d, Readexcel f) throws InterruptedException, IOException {
 		driver = d;
+		driver.navigate().refresh();
+		Thread.sleep(4000);
 		ES = f;
 		promptUser();
 		generate();
@@ -75,15 +77,19 @@ public class GenerateTemplate {
 	    while(NullinaRow !=20) {
 		    System.out.println("row: " + row);
 		    String jackid = ES.RWcell(ES.jackNum, row, null, 0); 
-		    String Tag = ES.RWcell(ES.noteNum, row, null, 0); 
+		    String Tag = ES.RWcell(ES.noteNum, row, null, 0);
+		    if(Tag.equals("empty")) {
+		    	Tag = "";
+		    }
 		    String closet = ES.RWcell(ES.closetNum, row, null, 0); // grab from excel //need closet in excel sheet, since not all cables exist
 		    if(!closets.contains(closet) && !closet.equals("empty")) {
 		    	CheckCloset(closet);
 		    }
 		    String SourcePort = ES.RWcell(ES.sourcePortNum, row, null, 0); // grab from excel
 		    String TargetPort = ES.RWcell(ES.desPortNum, row, null, 0); // grab from excel
+		    String stack = ES.RWcell(ES.stackNum, row, null, 0); // grab from excel
 		    //closet = buildingCode + "-" + closet;
-		    if(jackid.equals("empty") || closet.equals("empty") || Tag.equals("empty") || SourcePort.equals("empty") || TargetPort.equals("empty")) {
+		    if(stack.equals("empty") ||jackid.equals("empty") || closet.equals("empty") || SourcePort.equals("empty") || TargetPort.equals("empty")) {
 		    	NullinaRow++;
 		    }
 		    else {	   
@@ -94,10 +100,10 @@ public class GenerateTemplate {
 		    		System.out.println(closetTypes);
 		    		
 		    	}
-				String hostname = closetTypes.get(closetIndex) + "-SW-" + buildingCode + closet + "01.TELE.IASTATE.EDU"; 
+				String hostname = closetTypes.get(closetIndex) + "-SW-" + closet.replace("-", "") + "-" + stack + ".TELE.IASTATE.EDU"; 
 				
 				
-		        ImportRows.put(String.valueOf(writeRow), new Object[] {hostname,SourcePort,buildingCode + "-" + closet + "-COPPERPATCH",
+		        ImportRows.put(String.valueOf(writeRow), new Object[] {hostname,SourcePort,closet + "-COPPERPATCH",
 		        		TargetPort, "","",jackid,Tag});
 		        
 		        
@@ -284,22 +290,44 @@ public class GenerateTemplate {
 	public void promptUser() {
 		filepath = generateFilepath(ES.path);
 		Scanner scanner = new Scanner(System.in);
+		String response = "n";
+		
+		while(response.equals("n")) {
 		 
-		System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
-		ES.closetCol = scanner.next();
-		ES.closetNum = ES.Convert(ES.closetCol);
+			System.out.println("Please enter the column (Letter) that contains the closet, column format ex. J40-XX");
+			ES.closetCol = scanner.next();
+			ES.closetNum = ES.Convert(ES.closetCol);
+			
+			//check if not full
+			
+			System.out.println("Please enter the column (Letter) for the source port");
+			ES.sourcePortCol = scanner.next();
+			ES.sourcePortNum = ES.Convert(ES.sourcePortCol);
+			
+			System.out.println("Please enter the column (Letter) for the destination port");
+			ES.desPortCol = scanner.next();
+			ES.desPortNum = ES.Convert(ES.desPortCol);
+			
+			System.out.println("Please enter the column (Letter) for the stack number (01,02,etc.)");
+			ES.stackCol = scanner.next();
+			ES.stackNum = ES.Convert(ES.stackCol);
+			
+			
+			System.out.println("First Closet value: "  + ES.RWcell(ES.closetNum, 1, null, 0));
+			System.out.println("First source port value: " + ES.RWcell(ES.sourcePortNum, 1, null, 0));
+			System.out.println("First target port value: " + ES.RWcell(ES.desPortNum, 1, null, 0));
+			System.out.println("First stack number value: " + ES.RWcell(ES.stackNum, 1, null, 0));
+			System.out.println("Verify the columns above are correct (y/n)");
+			response = scanner.next().toLowerCase();
+			if(response.equals("y")) {
+				continue;
+			}
+			else if(!response.equals("n")) {
+				System.out.println("please enter either y for yes or n for no");
+				response = "n";
+			}
 		
-		//check if not full
-		
-		System.out.println("Please enter the column (Letter) for the source port");
-		ES.sourcePortCol = scanner.next();
-		ES.sourcePortNum = ES.Convert(ES.sourcePortCol);
-		
-		System.out.println("Please enter the column (Letter) for the destination port");
-		ES.desPortCol = scanner.next();
-		ES.desPortNum = ES.Convert(ES.desPortCol);
-		
-		
+		}
 		scanner.close();
 		
 		//print fields out

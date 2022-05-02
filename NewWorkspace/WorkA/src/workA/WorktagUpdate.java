@@ -1,6 +1,8 @@
 package workA;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -326,6 +328,26 @@ public class WorktagUpdate {
 			}
 			row++;
 		}
+		Scanner scanner = new Scanner(System.in);
+		String response = "z";
+		 
+		while(!response.equals("y") && !response.equals("n")) {
+			System.out.println("Would you like to generate the import template (y/n)");
+			response = scanner.next().toLowerCase();
+			if(response.equals("y")) {
+				try {
+					new GenerateTemplate(driver, ES);
+				} catch (InterruptedException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+			else if(!response.equals("n")) {
+				System.out.println("please enter either y for yes or n for no");
+			}
+		}
+		
+		
+		scanner.close();
 	}
 	
 	public String addEnd(String cutsheetID, String retjackidStr) {

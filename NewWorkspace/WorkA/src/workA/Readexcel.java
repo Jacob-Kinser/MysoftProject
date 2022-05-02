@@ -44,6 +44,9 @@ public class Readexcel {
 	String desPortCol;
 	int desPortNum;
 	
+	String stackCol;
+	int stackNum;
+	
 	String startDate;
 	String endDate;
 	
