@@ -42,6 +42,8 @@ public class GenerateTemplate {
 	ArrayList<String> closetTypes = new ArrayList<>();
 	ArrayList<String> ReturnClosets = new ArrayList<>();
 	
+	ArrayList<String> MissedJacks = new ArrayList<>();
+	
 	 // This data needs to be written (Object[])
     Map<String, Object[]> ImportRows = new TreeMap<String, Object[]>();
         
@@ -66,6 +68,9 @@ public class GenerateTemplate {
 	}
 	
 	public void generate() throws InterruptedException, IOException {
+		/*
+		 * Generate the headers
+		 */
 		ImportRows.put(
 	            "1",
 	            new Object[] { "SourceHostname", "SourcePort", "TargetHostname","TargetPort","MediaType","ColorCode","Notes","AP Type" });
@@ -86,11 +91,17 @@ public class GenerateTemplate {
 		    	CheckCloset(closet);
 		    }
 		    String SourcePort = ES.RWcell(ES.sourcePortNum, row, null, 0); // grab from excel
-		    String TargetPort = ES.RWcell(ES.desPortNum, row, null, 0); // grab from excel
+		    //String TargetPort = ES.RWcell(ES.desPortNum, row, null, 0); // grab from excel
 		    String stack = ES.RWcell(ES.stackNum, row, null, 0); // grab from excel
 		    //closet = buildingCode + "-" + closet;
-		    if(stack.equals("empty") ||jackid.equals("empty") || closet.equals("empty") || SourcePort.equals("empty") || TargetPort.equals("empty")) {
+		    /*
+		     * check if anything is empty besides tag
+		     */
+		    if(stack.equals("empty") ||jackid.equals("empty") || closet.equals("empty") || SourcePort.equals("empty")) {
 		    	NullinaRow++;
+		    	if(!jackid.equals("empty")) {
+		    		MissedJacks.add(jackid);
+		    	}
 		    }
 		    else {	   
 		    	int closetIndex = closets.indexOf(closet);
@@ -102,9 +113,9 @@ public class GenerateTemplate {
 		    	}
 				String hostname = closetTypes.get(closetIndex) + "-SW-" + closet.replace("-", "") + "-" + stack + ".TELE.IASTATE.EDU"; 
 				
-				
+				//generate new row
 		        ImportRows.put(String.valueOf(writeRow), new Object[] {hostname,SourcePort,closet + "-COPPERPATCH",
-		        		TargetPort, "","",jackid,Tag});
+		        		SourcePort, "","",jackid,Tag});
 		        
 		        
 			    NullinaRow = 0;
@@ -114,11 +125,13 @@ public class GenerateTemplate {
 	    }
 	    createFile();
 	   
+	    System.out.println("Missed Jackids: " + MissedJacks.toString());
+	    
 	}
 	
 	/*
 	 * https://stackoverflow.com/questions/1176080/create-excel-file-in-java
-	 * create file, set headers
+	 * create file, set headers, add each row set in the generate method
 	 */
 	public void createFile() throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -300,13 +313,13 @@ public class GenerateTemplate {
 			
 			//check if not full
 			
-			System.out.println("Please enter the column (Letter) for the source port");
+			System.out.println("Please enter the column (Letter) for the source port (1/0/5, etc.)");
 			ES.sourcePortCol = scanner.next();
 			ES.sourcePortNum = ES.Convert(ES.sourcePortCol);
 			
-			System.out.println("Please enter the column (Letter) for the destination port");
-			ES.desPortCol = scanner.next();
-			ES.desPortNum = ES.Convert(ES.desPortCol);
+//			System.out.println("Please enter the column (Letter) for the destination port (port1,port2,etc.)");
+//			ES.desPortCol = scanner.next();
+//			ES.desPortNum = ES.Convert(ES.desPortCol);
 			
 			System.out.println("Please enter the column (Letter) for the stack number (01,02,etc.)");
 			ES.stackCol = scanner.next();
@@ -315,7 +328,7 @@ public class GenerateTemplate {
 			
 			System.out.println("First Closet value: "  + ES.RWcell(ES.closetNum, 1, null, 0));
 			System.out.println("First source port value: " + ES.RWcell(ES.sourcePortNum, 1, null, 0));
-			System.out.println("First target port value: " + ES.RWcell(ES.desPortNum, 1, null, 0));
+			//System.out.println("First target port value: " + ES.RWcell(ES.desPortNum, 1, null, 0));
 			System.out.println("First stack number value: " + ES.RWcell(ES.stackNum, 1, null, 0));
 			System.out.println("Verify the columns above are correct (y/n)");
 			response = scanner.next().toLowerCase();
@@ -330,57 +343,8 @@ public class GenerateTemplate {
 		}
 		scanner.close();
 		
-		//print fields out
 	}
 	
-	/*
-	 * Create file code
-	 * 
-	 * 
-	 *  try {
-		    FileOutputStream fileOut = new FileOutputStream(filepath);
-	        workbook.write(fileOut);
-	        fileOut.close();
-	        workbook.close();
-	    }catch ( Exception ex ) { //catch file not found exception
-            System.out.println(ex);
-        }
-         HSSFRow rowVals = sheet.createRow((short)row);
-			    rowVals.createCell(0).setCellValue(hostname);
-			    rowVals.createCell(1).setCellValue(SourcePort);
-			    rowVals.createCell(2).setCellValue(buildingCode + "-" + closet + "-COPPERPATCH");
-			    rowVals.createCell(3).setCellValue(TargetPort);
-			    rowVals.createCell(4).setCellValue("");
-			    rowVals.createCell(5).setCellValue("");
-			    rowVals.createCell(6).setCellValue(jackid);
-			    rowVals.createCell(7).setCellValue(Tag);
-			    
-			    
-			    	public void createFile() {
-		 try {
-	            workbook = new HSSFWorkbook();
-	            sheet = workbook.createSheet("Sheet1");  
 
-	            HSSFRow rowhead = sheet.createRow((short)0);
-	            rowhead.createCell(0).setCellValue("SourceHostname");
-	            rowhead.createCell(1).setCellValue("SourcePort");
-	            rowhead.createCell(2).setCellValue("TargetHostname");
-	            rowhead.createCell(3).setCellValue("TargetPort");
-	            rowhead.createCell(4).setCellValue("MediaType");
-	            rowhead.createCell(5).setCellValue("ColorCode");
-	            rowhead.createCell(6).setCellValue("Notes");
-	            rowhead.createCell(7).setCellValue("AP Type");
-
-	            
-
-	            
-
-	        } catch ( Exception ex ) {
-	            System.out.println(ex);
-	        }
-	}
-	
-	 */
-	
 
 }
