@@ -46,10 +46,17 @@ public class GenerateTemplate {
 	
 	 // This data needs to be written (Object[])
     Map<String, Object[]> ImportRows = new TreeMap<String, Object[]>();
-        
+    
+    /*
+     * Empty constructor
+     */
 	public GenerateTemplate()  {
 		
 	}
+	
+	/*
+	 * Constructor for new session, not coming from worktag update
+	 */
 	public GenerateTemplate(WebDriver d) throws InterruptedException, IOException {
 		driver = d;
 		//ask for filepaths
@@ -58,6 +65,9 @@ public class GenerateTemplate {
 		generate();
 	}
 	
+	/*
+	 * Constructor coming from worktag update
+	 */
 	public GenerateTemplate(WebDriver d, Readexcel f) throws InterruptedException, IOException {
 		driver = d;
 		driver.navigate().refresh();
